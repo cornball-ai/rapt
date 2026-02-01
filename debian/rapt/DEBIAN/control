@@ -1,0 +1,16 @@
+Package: rapt
+Version: 0.1.0-1
+Architecture: amd64
+Maintainer: Troy Hernandez <troy@cornball.ai>
+Installed-Size: 94
+Depends: libc6 (>= 2.38), r-base-core, systemd
+Section: gnu-r
+Priority: optional
+Homepage: https://github.com/cornball-ai/rapt
+Description: Bridge install.packages() to apt for binary R packages
+ rapt enables R's install.packages() to automatically use apt for
+ packages available in the r2u repository, providing fast binary
+ installs without compilation.
+ .
+ This is a Python-free alternative to bspm, using a minimal C daemon
+ that communicates over a Unix socket.

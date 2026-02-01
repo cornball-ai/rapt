@@ -1,0 +1,39 @@
+#!/bin/sh
+set -e
+
+RPROFILE="/etc/R/Rprofile.site"
+
+case "$1" in
+    remove|purge)
+        # Stop and disable systemd socket
+        if [ -d /run/systemd/system ]; then
+            systemctl stop raptd.socket 2>/dev/null || true
+            systemctl stop raptd.service 2>/dev/null || true
+            systemctl disable raptd.socket 2>/dev/null || true
+        fi
+
+        # Remove rapt lines from Rprofile.site
+        if [ -f "$RPROFILE" ]; then
+            # Remove the rapt block (marker line and following line)
+            sed -i '/^# rapt: enable system package integration$/,/^if (requireNamespace("rapt".*$/d' "$RPROFILE"
+            # Clean up any trailing blank lines
+            sed -i -e :a -e '/^\n*$/{$d;N;ba' -e '}' "$RPROFILE" 2>/dev/null || true
+        fi
+        ;;
+esac
+
+# Automatically added by dh_installsystemd/13.14.1ubuntu5
+if [ "$1" = remove ] && [ -d /run/systemd/system ] ; then
+	systemctl --system daemon-reload >/dev/null || true
+fi
+# End automatically added section
+# Automatically added by dh_installsystemd/13.14.1ubuntu5
+if [ "$1" = "purge" ]; then
+	if [ -x "/usr/bin/deb-systemd-helper" ]; then
+		deb-systemd-helper purge 'raptd.service' 'raptd.socket' >/dev/null || true
+	fi
+fi
+# End automatically added section
+
+
+exit 0

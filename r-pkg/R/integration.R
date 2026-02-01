@@ -53,9 +53,11 @@ enable <- function() {
     }
 
     # Replace install.packages in utils namespace
-    unlock <- unlockBinding("install.packages", asNamespace("utils"))
-    assign("install.packages", wrapped, envir = asNamespace("utils"))
-    if (unlock) lockBinding("install.packages", asNamespace("utils"))
+    ns <- asNamespace("utils")
+    was_locked <- bindingIsLocked("install.packages", ns)
+    if (was_locked) unlockBinding("install.packages", ns)
+    assign("install.packages", wrapped, envir = ns)
+    if (was_locked) lockBinding("install.packages", ns)
 
     options(rapt.enabled = TRUE)
     message("rapt enabled - install.packages() will use apt when possible")
@@ -80,10 +82,11 @@ disable <- function() {
     }
 
     # Restore original
-    unlock <- unlockBinding("install.packages", asNamespace("utils"))
-    assign("install.packages", .rapt_env$original_install.packages,
-           envir = asNamespace("utils"))
-    if (unlock) lockBinding("install.packages", asNamespace("utils"))
+    ns <- asNamespace("utils")
+    was_locked <- bindingIsLocked("install.packages", ns)
+    if (was_locked) unlockBinding("install.packages", ns)
+    assign("install.packages", .rapt_env$original_install.packages, envir = ns)
+    if (was_locked) lockBinding("install.packages", ns)
 
     .rapt_env$original_install.packages <- NULL
     options(rapt.enabled = FALSE)

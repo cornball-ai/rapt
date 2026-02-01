@@ -1,0 +1,13 @@
+Package: rapt-dbgsym
+Package-Type: ddeb
+Source: rapt
+Version: 0.1.0-1
+Auto-Built-Package: debug-symbols
+Architecture: amd64
+Maintainer: Troy Hernandez <troy@cornball.ai>
+Installed-Size: 28
+Depends: rapt (= 0.1.0-1)
+Section: debug
+Priority: optional
+Description: debug symbols for rapt
+Build-Ids: fdfd9392dd3452740b432013562a07020b9274b8 ffc042787d0c6a131cf381d0dce40e3a5bfc0ae5
