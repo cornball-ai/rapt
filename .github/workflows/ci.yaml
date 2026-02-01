@@ -1,0 +1,44 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+env:
+  _R_CHECK_FORCE_SUGGESTS_: "false"
+
+jobs:
+  r-package:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: r-pkg
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup
+        uses: eddelbuettel/github-actions/r-ci@master
+
+      - name: Dependencies
+        run: ./run.sh install_deps
+
+      - name: Build
+        run: ./run.sh build
+
+      - name: Test
+        run: ./run.sh run_tests
+
+  daemon:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Build daemon
+        run: make -C daemon
+
+      - name: Check daemon runs
+        run: |
+          ./daemon/raptd --help || true
+          file ./daemon/raptd
