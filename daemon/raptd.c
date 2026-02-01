@@ -54,6 +54,12 @@ static int run_apt(const char *action, char **pkgs, int npkgs, int client_fd) {
         return -1;
     }
 
+    /* Block SIGCHLD so the handler doesn't reap our child */
+    sigset_t block_chld, old_mask;
+    sigemptyset(&block_chld);
+    sigaddset(&block_chld, SIGCHLD);
+    sigprocmask(SIG_BLOCK, &block_chld, &old_mask);
+
     pid_t pid = fork();
     if (pid < 0) {
         syslog(LOG_ERR, "fork failed: %s", strerror(errno));
@@ -113,10 +119,20 @@ static int run_apt(const char *action, char **pkgs, int npkgs, int client_fd) {
     }
     close(pipefd[0]);
 
-    int status;
-    waitpid(pid, &status, 0);
+    int status = 0;
+    int ret = waitpid(pid, &status, 0);
 
-    int exit_code = WIFEXITED(status) ? WEXITSTATUS(status) : 127;
+    /* Restore signal mask */
+    sigprocmask(SIG_SETMASK, &old_mask, NULL);
+
+    int exit_code;
+    if (ret < 0) {
+        syslog(LOG_WARNING, "waitpid failed: %s", strerror(errno));
+        exit_code = 127;
+    } else {
+        exit_code = WIFEXITED(status) ? WEXITSTATUS(status) : 127;
+    }
+    syslog(LOG_INFO, "apt exit: ret=%d raw_status=%d exit_code=%d", ret, status, exit_code);
     return exit_code;
 }
 
