@@ -10,9 +10,6 @@ env:
 jobs:
   r-package:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: r-pkg
 
     steps:
       - uses: actions/checkout@v6
@@ -21,13 +18,18 @@ jobs:
         uses: eddelbuettel/github-actions/r-ci@master
 
       - name: Dependencies
-        run: ./run.sh install_deps
+        run: ./run.sh install_deps r-pkg
 
       - name: Build
-        run: ./run.sh build
+        run: R CMD build r-pkg
+
+      - name: Check
+        run: R CMD check rapt_*.tar.gz --no-manual
 
       - name: Test
-        run: ./run.sh run_tests
+        run: |
+          R CMD INSTALL rapt_*.tar.gz
+          Rscript -e 'tinytest::test_package("rapt")'
 
   daemon:
     runs-on: ubuntu-latest
