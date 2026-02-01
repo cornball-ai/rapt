@@ -1,0 +1,10 @@
+# Public API
+export(install_sys)
+export(remove_sys)
+export(available_sys)
+export(enable)
+export(disable)
+export(manager)
+
+# C routines
+useDynLib(rapt, .registration = TRUE)

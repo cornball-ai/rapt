@@ -1,0 +1,16 @@
+Package: rapt
+Type: Package
+Title: Bridge 'install.packages()' to 'apt' for Binary R Packages
+Version: 0.1.0
+Authors@R: person("Troy", "Hernandez", role = c("aut", "cre"),
+                  email = "troy@cornball.ai")
+Description: Enables 'install.packages()' to install R packages via apt,
+    providing fast binary installs from r2u repositories. Communicates with
+    the raptd daemon over a Unix socket. A Python-free alternative to 'bspm'.
+License: MIT + file LICENSE
+URL: https://github.com/cornball-ai/rapt
+BugReports: https://github.com/cornball-ai/rapt/issues
+Depends: R (>= 4.0.0)
+Suggests: tinytest
+NeedsCompilation: yes
+Encoding: UTF-8
