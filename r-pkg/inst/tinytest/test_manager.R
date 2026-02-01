@@ -54,3 +54,89 @@ if (Sys.which("apt-cache") != "") {
     # Should not have r-cran- prefix
     expect_false(any(grepl("^r-cran-", avail)))
 }
+
+# === Edge cases ===
+
+# Package names with dots
+expect_equal(
+    rapt:::validate_pkgs("data.table"),
+    "data.table"
+)
+expect_equal(
+    rapt:::r_to_deb("data.table"),
+    "r-cran-data.table"
+)
+
+# Package names with numbers
+expect_equal(
+    rapt:::validate_pkgs("R6"),
+    "R6"
+)
+expect_equal(
+    rapt:::r_to_deb("R6"),
+    "r-cran-r6"
+)
+
+# Injection attempts - semicolons
+expect_warning(
+    result <- rapt:::validate_pkgs("foo;rm -rf /"),
+    "Invalid"
+)
+expect_equal(result, character(0))
+
+# Injection attempts - backticks
+expect_warning(
+    result <- rapt:::validate_pkgs("foo`whoami`"),
+    "Invalid"
+)
+expect_equal(result, character(0))
+
+# Injection attempts - dollar signs
+expect_warning(
+    result <- rapt:::validate_pkgs("foo$HOME"),
+    "Invalid"
+)
+expect_equal(result, character(0))
+
+# Injection attempts - pipes
+expect_warning(
+    result <- rapt:::validate_pkgs("foo|cat /etc/passwd"),
+    "Invalid"
+)
+expect_equal(result, character(0))
+
+# Injection attempts - newlines
+expect_warning(
+    result <- rapt:::validate_pkgs("foo\nrm -rf /"),
+    "Invalid"
+)
+expect_equal(result, character(0))
+
+# Empty strings filtered out
+expect_equal(
+    rapt:::validate_pkgs(c("good", "", "also_good")),
+    c("good", "also_good")
+)
+
+# Underscores are valid
+expect_equal(
+    rapt:::validate_pkgs("some_package"),
+    "some_package"
+)
+
+# All empty input
+expect_equal(
+    rapt:::validate_pkgs(c("", "")),
+    character(0)
+)
+
+# Non-character input
+expect_error(
+    rapt:::validate_pkgs(123),
+    "character"
+)
+
+expect_error(
+    rapt:::validate_pkgs(NULL),
+    "character"
+)
