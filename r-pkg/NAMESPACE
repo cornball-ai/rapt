@@ -1,10 +1,10 @@
-# Public API
-export(install_sys)
-export(remove_sys)
-export(available_sys)
-export(enable)
-export(disable)
-export(manager)
+# tinyrox says don't edit this manually, but it can't stop you!
 
-# C routines
+export(available_sys)
+export(disable)
+export(enable)
+export(install_sys)
+export(manager)
+export(remove_sys)
+
 useDynLib(rapt, .registration = TRUE)

@@ -1,12 +1,16 @@
-#' @title System package management
-#' @name manager
-#' @description Install and remove R packages via apt.
-NULL
-
-#' Install system packages
+#' Install system packages via apt
 #'
-#' @param pkgs Character vector of package names to install.
-#' @return Invisible TRUE on success, FALSE on failure.
+#' Installs R packages using \code{apt-get install r-cran-*}. Communicates
+#' with the raptd daemon if available, otherwise falls back to sudo.
+#'
+#' @param pkgs Character vector of R package names to install (e.g., "dplyr").
+#' @return Invisible \code{TRUE} on success, \code{FALSE} on failure.
+#' @examples
+#' \dontrun{
+#' install_sys("dplyr")
+#' install_sys(c("ggplot2", "data.table"))
+#' }
+#' @seealso \code{\link{remove_sys}}, \code{\link{available_sys}}
 #' @export
 install_sys <- function(pkgs) {
     pkgs <- validate_pkgs(pkgs)
@@ -33,10 +37,18 @@ install_sys <- function(pkgs) {
     fallback_install(pkgs)
 }
 
-#' Remove system packages
+#' Remove system packages via apt
 #'
-#' @param pkgs Character vector of package names to remove.
-#' @return Invisible TRUE on success, FALSE on failure.
+#' Removes R packages using \code{apt-get remove r-cran-*}. Communicates
+#' with the raptd daemon if available, otherwise falls back to sudo.
+#'
+#' @param pkgs Character vector of R package names to remove.
+#' @return Invisible \code{TRUE} on success, \code{FALSE} on failure.
+#' @examples
+#' \dontrun{
+#' remove_sys("dplyr")
+#' }
+#' @seealso \code{\link{install_sys}}
 #' @export
 remove_sys <- function(pkgs) {
     pkgs <- validate_pkgs(pkgs)
@@ -65,7 +77,17 @@ remove_sys <- function(pkgs) {
 
 #' List available system packages
 #'
-#' @return Character vector of R package names available via apt.
+#' Queries \code{apt-cache} for available \code{r-cran-*} packages.
+#' Does not require the raptd daemon.
+#'
+#' @return Character vector of R package names available via apt
+#'   (without the \code{r-cran-} prefix).
+#' @examples
+#' \dontrun{
+#' available_sys()
+#' "dplyr" %in% available_sys()
+#' }
+#' @seealso \code{\link{install_sys}}
 #' @export
 available_sys <- function() {
     # This doesn't need the daemon - query apt-cache directly
@@ -114,9 +136,19 @@ validate_pkgs <- function(pkgs) {
     pkgs
 }
 
-#' Get package manager info
+#' Get rapt status and configuration
 #'
-#' @return List with rapt configuration and status.
+#' Returns information about the current rapt configuration and daemon status.
+#'
+#' @return A list with components:
+#' \describe{
+#'   \item{daemon_available}{Logical; is the raptd daemon running?}
+#'   \item{socket_path}{Character; path to the Unix socket.}
+#'   \item{sudo_allowed}{Logical; is sudo fallback enabled?}
+#'   \item{enabled}{Logical; is the install.packages() hook active?}
+#' }
+#' @examples
+#' manager()
 #' @export
 manager <- function() {
     list(

@@ -1,7 +1,5 @@
-#' @title Low-level socket communication with raptd
-#' @name socket
-#' @description Internal functions for communicating with the rapt daemon.
-NULL
+#' @useDynLib rapt, .registration = TRUE
+"_PACKAGE"
 
 #' Default socket path
 #' @noRd

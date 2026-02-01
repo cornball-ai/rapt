@@ -1,17 +1,28 @@
-#' @title Hook into install.packages()
-#' @name integration
-#' @description Enable/disable automatic apt installation for R packages.
-NULL
-
 # Store original install.packages function
 .rapt_env <- new.env(parent = emptyenv())
 
 #' Enable rapt integration
 #'
 #' Hooks into \code{install.packages()} to automatically use apt for
-#' packages available in the system repository.
+#' packages available in the r2u repository. When enabled, calls to
+#' \code{install.packages()} will:
+#' \enumerate{
+#'   \item Check which requested packages are available via apt
+#'   \item Install those packages via \code{install_sys()}
+#'   \item Install remaining packages from CRAN as usual
+#' }
 #'
-#' @return Invisible NULL.
+#' This is called automatically at startup when rapt is installed via
+#' the Debian package (added to \code{/etc/R/Rprofile.site}).
+#'
+#' @return Invisible \code{NULL}.
+#' @examples
+#' \dontrun{
+#' enable()
+#' install.packages("dplyr")
+#' #> Installing via apt: dplyr
+#' }
+#' @seealso \code{\link{disable}}, \code{\link{manager}}
 #' @export
 enable <- function() {
     if (isTRUE(getOption("rapt.enabled"))) {
@@ -66,9 +77,16 @@ enable <- function() {
 
 #' Disable rapt integration
 #'
-#' Restores the original \code{install.packages()} function.
+#' Restores the original \code{install.packages()} function so packages
+#' are installed from CRAN instead of apt.
 #'
-#' @return Invisible NULL.
+#' @return Invisible \code{NULL}.
+#' @examples
+#' \dontrun{
+#' disable()
+#' install.packages("dplyr")  # Now compiles from CRAN
+#' }
+#' @seealso \code{\link{enable}}
 #' @export
 disable <- function() {
     if (!isTRUE(getOption("rapt.enabled"))) {
