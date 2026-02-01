@@ -1,0 +1,13 @@
+# Build artifacts
+daemon/raptd
+
+# R package build artifacts
+r-pkg/src/*.o
+r-pkg/src/*.so
+r-pkg/*.Rcheck/
+r-pkg/*.tar.gz
+
+# Debian build artifacts
+*.deb
+*.buildinfo
+*.changes
