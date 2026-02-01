@@ -1,0 +1,20 @@
+Source: rapt
+Section: gnu-r
+Priority: optional
+Maintainer: Troy Hernandez <troy@cornball.ai>
+Build-Depends: debhelper-compat (= 13), r-base-dev
+Standards-Version: 4.6.0
+Homepage: https://github.com/cornball-ai/rapt
+Vcs-Git: https://github.com/cornball-ai/rapt.git
+Vcs-Browser: https://github.com/cornball-ai/rapt
+
+Package: rapt
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, r-base-core, systemd
+Description: Bridge install.packages() to apt for binary R packages
+ rapt enables R's install.packages() to automatically use apt for
+ packages available in the r2u repository, providing fast binary
+ installs without compilation.
+ .
+ This is a Python-free alternative to bspm, using a minimal C daemon
+ that communicates over a Unix socket.
