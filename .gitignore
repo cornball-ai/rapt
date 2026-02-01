@@ -9,5 +9,15 @@ r-pkg/*.tar.gz
 
 # Debian build artifacts
 *.deb
+*.ddeb
 *.buildinfo
 *.changes
+debian/.debhelper/
+debian/debhelper-build-stamp
+debian/files
+debian/*.debhelper
+debian/*.substvars
+debian/rapt/
+
+# R package tarball in root
+rapt_*.tar.gz
