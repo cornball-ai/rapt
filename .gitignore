@@ -7,17 +7,17 @@ r-pkg/src/*.so
 r-pkg/*.Rcheck/
 r-pkg/*.tar.gz
 
-# Debian build artifacts
+# Debian build artifacts (in pkg/)
 *.deb
 *.ddeb
 *.buildinfo
 *.changes
-debian/.debhelper/
-debian/debhelper-build-stamp
-debian/files
-debian/*.debhelper
-debian/*.substvars
-debian/rapt/
+pkg/debian/.debhelper/
+pkg/debian/debhelper-build-stamp
+pkg/debian/files
+pkg/debian/*.debhelper
+pkg/debian/*.substvars
+pkg/debian/rapt/
 
 # R package tarball in root
 rapt_*.tar.gz

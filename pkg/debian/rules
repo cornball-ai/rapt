@@ -7,22 +7,22 @@ export DH_VERBOSE = 1
 
 override_dh_auto_build:
 	# Build the daemon
-	$(MAKE) -C daemon
+	$(MAKE) -C ../daemon
 	# Build the R package
-	R CMD build r-pkg
+	R CMD build ../r-pkg
 
 override_dh_auto_install:
 	# Install daemon
 	install -d debian/rapt/usr/bin
-	install -m 755 daemon/raptd debian/rapt/usr/bin/
+	install -m 755 ../daemon/raptd debian/rapt/usr/bin/
 	# Install systemd units
 	install -d debian/rapt/lib/systemd/system
-	install -m 644 daemon/raptd.socket debian/rapt/lib/systemd/system/
-	install -m 644 daemon/raptd.service debian/rapt/lib/systemd/system/
+	install -m 644 ../daemon/raptd.socket debian/rapt/lib/systemd/system/
+	install -m 644 ../daemon/raptd.service debian/rapt/lib/systemd/system/
 	# Install R package
 	install -d debian/rapt/usr/lib/R/site-library
 	R CMD INSTALL --library=debian/rapt/usr/lib/R/site-library rapt_*.tar.gz
 
 override_dh_auto_clean:
-	$(MAKE) -C daemon clean
+	$(MAKE) -C ../daemon clean
 	rm -f rapt_*.tar.gz

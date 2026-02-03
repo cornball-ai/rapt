@@ -3,15 +3,26 @@
 #' @description Fallback to sudo apt-get when raptd is not running.
 NULL
 
-#' Check if sudo fallback is allowed
+#' Check if running as root
 #' @noRd
-can_use_sudo <- function() {
+is_root <- function() {
+    system("id -u", intern = TRUE) == "0"
+}
+
+#' Check if apt fallback is allowed
+#' @noRd
+can_use_fallback <- function() {
+    # Root can always use apt directly
+    if (is_root()) {
+        return(TRUE)
+    }
+
     # Explicit option takes precedence
     if (isTRUE(getOption("rapt.sudo"))) {
         return(TRUE)
     }
 
-    # In interactive mode, we can prompt
+    # In interactive mode, we can prompt for sudo
     if (interactive()) {
         return(TRUE)
     }
@@ -28,20 +39,24 @@ r_to_deb <- function(pkgs) {
 #' Fallback install via sudo
 #' @noRd
 fallback_install <- function(pkgs) {
-    if (!can_use_sudo()) {
-        warning("raptd not available and sudo fallback disabled. ",
+    if (!can_use_fallback()) {
+        warning("raptd not available and apt fallback disabled. ",
                 "Set options(rapt.sudo = TRUE) to enable.")
         return(invisible(FALSE))
     }
 
     deb_pkgs <- r_to_deb(pkgs)
-    args <- c("apt-get", "install", "-y", deb_pkgs)
 
-    message("raptd not available, falling back to sudo")
-    status <- system2("sudo", args)
+    message("raptd not available, falling back to ",
+            if (is_root()) "direct apt" else "sudo")
+    if (is_root()) {
+        status <- system2("apt-get", c("install", "-y", deb_pkgs))
+    } else {
+        status <- system2("sudo", c("apt-get", "install", "-y", deb_pkgs))
+    }
 
     if (status != 0) {
-        warning("sudo apt-get install failed with status ", status)
+        warning("apt-get install failed with status ", status)
         return(invisible(FALSE))
     }
 
@@ -51,20 +66,24 @@ fallback_install <- function(pkgs) {
 #' Fallback remove via sudo
 #' @noRd
 fallback_remove <- function(pkgs) {
-    if (!can_use_sudo()) {
-        warning("raptd not available and sudo fallback disabled. ",
+    if (!can_use_fallback()) {
+        warning("raptd not available and apt fallback disabled. ",
                 "Set options(rapt.sudo = TRUE) to enable.")
         return(invisible(FALSE))
     }
 
     deb_pkgs <- r_to_deb(pkgs)
-    args <- c("apt-get", "remove", "-y", deb_pkgs)
 
-    message("raptd not available, falling back to sudo")
-    status <- system2("sudo", args)
+    message("raptd not available, falling back to ",
+            if (is_root()) "direct apt" else "sudo")
+    if (is_root()) {
+        status <- system2("apt-get", c("remove", "-y", deb_pkgs))
+    } else {
+        status <- system2("sudo", c("apt-get", "remove", "-y", deb_pkgs))
+    }
 
     if (status != 0) {
-        warning("sudo apt-get remove failed with status ", status)
+        warning("apt-get remove failed with status ", status)
         return(invisible(FALSE))
     }
 
