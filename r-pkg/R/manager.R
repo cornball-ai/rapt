@@ -1,6 +1,6 @@
 #' Install system packages via apt
 #'
-#' Installs R packages using \code{apt-get install r-cran-*}. Communicates
+#' Installs R packages using \code{apt install r-cran-*}. Communicates
 #' with the raptd daemon if available, otherwise falls back to sudo.
 #'
 #' @param pkgs Character vector of R package names to install (e.g., "dplyr").
@@ -39,7 +39,7 @@ install_sys <- function(pkgs) {
 
 #' Remove system packages via apt
 #'
-#' Removes R packages using \code{apt-get remove r-cran-*}. Communicates
+#' Removes R packages using \code{apt remove r-cran-*}. Communicates
 #' with the raptd daemon if available, otherwise falls back to sudo.
 #'
 #' @param pkgs Character vector of R package names to remove.

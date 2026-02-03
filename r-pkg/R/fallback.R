@@ -1,6 +1,6 @@
 #' @title Sudo fallback when daemon unavailable
 #' @name fallback
-#' @description Fallback to sudo apt-get when raptd is not running.
+#' @description Fallback to sudo apt when raptd is not running.
 NULL
 
 #' Check if running as root
@@ -50,13 +50,13 @@ fallback_install <- function(pkgs) {
     message("raptd not available, falling back to ",
             if (is_root()) "direct apt" else "sudo")
     if (is_root()) {
-        status <- system2("apt-get", c("install", "-y", deb_pkgs))
+        status <- system2("apt", c("install", "-y", deb_pkgs))
     } else {
-        status <- system2("sudo", c("apt-get", "install", "-y", deb_pkgs))
+        status <- system2("sudo", c("apt", "install", "-y", deb_pkgs))
     }
 
     if (status != 0) {
-        warning("apt-get install failed with status ", status)
+        warning("apt install failed with status ", status)
         return(invisible(FALSE))
     }
 
@@ -77,13 +77,13 @@ fallback_remove <- function(pkgs) {
     message("raptd not available, falling back to ",
             if (is_root()) "direct apt" else "sudo")
     if (is_root()) {
-        status <- system2("apt-get", c("remove", "-y", deb_pkgs))
+        status <- system2("apt", c("remove", "-y", deb_pkgs))
     } else {
-        status <- system2("sudo", c("apt-get", "remove", "-y", deb_pkgs))
+        status <- system2("sudo", c("apt", "remove", "-y", deb_pkgs))
     }
 
     if (status != 0) {
-        warning("apt-get remove failed with status ", status)
+        warning("apt remove failed with status ", status)
         return(invisible(FALSE))
     }
 

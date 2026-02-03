@@ -9,7 +9,7 @@ Makes `install.packages("dplyr")` install `r-cran-dplyr` via apt instead of comp
 ## Architecture
 
 ```
-R session  →  Unix socket  →  raptd (root)  →  apt-get install r-cran-*
+R session  →  Unix socket  →  raptd (root)  →  apt install r-cran-*
 ```
 
 A minimal C daemon (`raptd`) listens on `/run/raptd.sock` and executes apt commands on behalf of unprivileged users.
@@ -36,7 +36,7 @@ The .deb installs everything: daemon, systemd units, R package, and enables rapt
 R CMD INSTALL r-pkg/
 ```
 
-Without the daemon, rapt falls back to `sudo apt-get` in interactive sessions.
+Without the daemon, rapt falls back to `sudo apt` in interactive sessions.
 
 ## Usage
 
@@ -95,21 +95,21 @@ options(rapt.socket = "/run/raptd.sock")
 
 ### Passwordless sudo for apt
 
-Without the daemon, rapt uses `sudo apt-get`. To avoid password prompts, add a sudoers rule limited to R packages:
+Without the daemon, rapt uses `sudo apt`. To avoid password prompts, add a sudoers rule limited to R packages:
 
 ```bash
 # /etc/sudoers.d/rapt
-%users ALL=(root) NOPASSWD: /usr/bin/apt-get install -y r-cran-*
-%users ALL=(root) NOPASSWD: /usr/bin/apt-get remove -y r-cran-*
-%users ALL=(root) NOPASSWD: /usr/bin/apt-get install -y r-bioc-*
-%users ALL=(root) NOPASSWD: /usr/bin/apt-get remove -y r-bioc-*
+%users ALL=(root) NOPASSWD: /usr/bin/apt install -y r-cran-*
+%users ALL=(root) NOPASSWD: /usr/bin/apt remove -y r-cran-*
+%users ALL=(root) NOPASSWD: /usr/bin/apt install -y r-bioc-*
+%users ALL=(root) NOPASSWD: /usr/bin/apt remove -y r-bioc-*
 ```
 
 ## How it compares to bspm
 
 | | bspm | rapt |
 |---|---|---|
-| Backend | Python D-Bus → PackageKit | C daemon → apt-get |
+| Backend | Python D-Bus → PackageKit | C daemon → apt |
 | Dependencies | Python, dbus-python, PackageKit | libc |
 | Socket | D-Bus system bus | Unix domain socket |
 | Lines of code | ~1500 | ~500 |
