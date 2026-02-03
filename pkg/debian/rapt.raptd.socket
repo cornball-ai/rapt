@@ -1,0 +1,9 @@
+[Unit]
+Description=rapt daemon socket
+
+[Socket]
+ListenStream=/run/raptd.sock
+SocketMode=0666
+
+[Install]
+WantedBy=sockets.target

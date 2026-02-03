@@ -6,13 +6,6 @@ MARKER="# rapt: enable system package integration"
 
 case "$1" in
     configure)
-        # Enable systemd socket
-        if [ -d /run/systemd/system ]; then
-            systemctl daemon-reload
-            systemctl enable raptd.socket
-            systemctl start raptd.socket
-        fi
-
         # Add rapt::enable() to Rprofile.site
         if [ -f "$RPROFILE" ]; then
             if ! grep -q "$MARKER" "$RPROFILE"; then

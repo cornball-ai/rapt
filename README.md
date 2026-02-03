@@ -90,15 +90,25 @@ options(rapt.socket = "/run/raptd.sock")
 ## Requirements
 
 - Ubuntu with [r2u](https://github.com/eddelbuettel/r2u) configured
-- systemd
 - R >= 4.0
+- systemd (optional — for the daemon; without it, falls back to sudo/root)
+
+### Passwordless sudo for apt
+
+Without the daemon, rapt uses `sudo apt-get`. To avoid password prompts, add a sudoers rule limited to R packages:
+
+```bash
+# /etc/sudoers.d/rapt
+%users ALL=(root) NOPASSWD: /usr/bin/apt-get install -y r-cran-*
+%users ALL=(root) NOPASSWD: /usr/bin/apt-get remove -y r-cran-*
+```
 
 ## How it compares to bspm
 
 | | bspm | rapt |
 |---|---|---|
 | Backend | Python D-Bus → PackageKit | C daemon → apt-get |
-| Dependencies | Python, dbus-python, PackageKit | libc, systemd |
+| Dependencies | Python, dbus-python, PackageKit | libc |
 | Socket | D-Bus system bus | Unix domain socket |
 | Lines of code | ~1500 | ~500 |
 

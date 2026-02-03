@@ -1,0 +1,5 @@
+# rapt::enable() is R namespace syntax, not a shell bashism
+rapt: possible-bashism-in-maintainer-script
+
+# No ITP bug for this package
+rapt: initial-upload-closes-no-bugs

@@ -10,7 +10,7 @@ Vcs-Browser: https://github.com/cornball-ai/rapt
 
 Package: rapt
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, r-base-core
+Depends: ${shlibs:Depends}, ${misc:Depends}, r-base-core, r-api-4.0
 Suggests: systemd
 Description: Bridge install.packages() to apt for binary R packages
  rapt enables R's install.packages() to automatically use apt for
