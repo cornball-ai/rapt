@@ -20,7 +20,8 @@ A minimal C daemon (`raptd`) listens on `/run/raptd.sock` and executes apt comma
 
 ```bash
 # Build
-sudo apt install debhelper r-base-dev
+sudo apt install debhelper r-base-dev  # as needed
+cd pkg
 dpkg-buildpackage -us -uc -b
 
 # Install
