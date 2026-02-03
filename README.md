@@ -101,6 +101,8 @@ Without the daemon, rapt uses `sudo apt-get`. To avoid password prompts, add a s
 # /etc/sudoers.d/rapt
 %users ALL=(root) NOPASSWD: /usr/bin/apt-get install -y r-cran-*
 %users ALL=(root) NOPASSWD: /usr/bin/apt-get remove -y r-cran-*
+%users ALL=(root) NOPASSWD: /usr/bin/apt-get install -y r-bioc-*
+%users ALL=(root) NOPASSWD: /usr/bin/apt-get remove -y r-bioc-*
 ```
 
 ## How it compares to bspm
