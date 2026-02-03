@@ -3,5 +3,5 @@
 \alias{fallback}
 \title{Sudo fallback when daemon unavailable}
 \description{
-Fallback to sudo apt-get when raptd is not running.
+Fallback to sudo apt when raptd is not running.
 }

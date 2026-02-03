@@ -7,7 +7,7 @@ rapt consists of a privileged C daemon (`raptd`) that executes apt commands on b
 ## Architecture
 
 ```
-User R session  →  Unix socket  →  raptd (root)  →  apt-get
+User R session  →  Unix socket  →  raptd (root)  →  apt
 ```
 
 The daemon runs as root and accepts commands from any local user via a world-readable Unix socket at `/run/raptd.sock`.

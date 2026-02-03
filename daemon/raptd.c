@@ -46,7 +46,7 @@ static void r_to_deb(const char *r_name, char *deb_name, size_t len) {
         *p = tolower(*p);
 }
 
-/* Execute apt-get and capture output */
+/* Execute apt and capture output */
 static int run_apt(const char *action, char **pkgs, int npkgs, int client_fd) {
     int pipefd[2];
     if (pipe(pipefd) < 0) {
@@ -69,18 +69,18 @@ static int run_apt(const char *action, char **pkgs, int npkgs, int client_fd) {
     }
 
     if (pid == 0) {
-        /* Child: execute apt-get */
+        /* Child: execute apt */
         close(pipefd[0]);
         dup2(pipefd[1], STDOUT_FILENO);
         dup2(pipefd[1], STDERR_FILENO);
         close(pipefd[1]);
 
-        /* Build argument list: apt-get <action> -y pkg1 pkg2 ... */
+        /* Build argument list: apt <action> -y pkg1 pkg2 ... */
         char **argv = calloc(npkgs + 5, sizeof(char *));
         if (!argv)
             _exit(127);
 
-        argv[0] = "apt-get";
+        argv[0] = "apt";
         argv[1] = (char *)action;
         argv[2] = "-y";
 
@@ -100,7 +100,7 @@ static int run_apt(const char *action, char **pkgs, int npkgs, int client_fd) {
             NULL
         };
 
-        execve("/usr/bin/apt-get", argv, envp);
+        execve("/usr/bin/apt", argv, envp);
         _exit(127);
     }
 
