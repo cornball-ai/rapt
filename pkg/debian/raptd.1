@@ -1,0 +1,31 @@
+.TH RAPTD 1 "February 2026" "rapt 0.1.0" "User Commands"
+.SH NAME
+raptd \- daemon for installing R packages via apt
+.SH SYNOPSIS
+.B raptd
+.SH DESCRIPTION
+.B raptd
+is a minimal C daemon that listens on a Unix socket and executes
+apt\-get commands on behalf of R sessions. It bridges R's
+.BR install.packages ()
+to apt for binary R package installation from the r2u repository.
+.PP
+The daemon listens on
+.I /run/raptd.sock
+and accepts newline\-delimited commands:
+.TP
+.BI install " pkg1 [pkg2 ...]"
+Install one or more R packages via apt\-get.
+.TP
+.BI remove " pkg1 [pkg2 ...]"
+Remove one or more R packages via apt\-get.
+.PP
+Package names are mapped from R names to Debian names
+(e.g., dplyr becomes r\-cran\-dplyr).
+.SH FILES
+.TP
+.I /run/raptd.sock
+Unix domain socket for client communication.
+.SH SEE ALSO
+.BR apt\-get (8),
+.BR systemd (1)

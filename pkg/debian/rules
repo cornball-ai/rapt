@@ -15,13 +15,15 @@ override_dh_auto_install:
 	# Install daemon
 	install -d debian/rapt/usr/bin
 	install -m 755 ../daemon/raptd debian/rapt/usr/bin/
-	# Install systemd units
-	install -d debian/rapt/usr/lib/systemd/system
-	install -m 644 ../daemon/raptd.socket debian/rapt/usr/lib/systemd/system/
-	install -m 644 ../daemon/raptd.service debian/rapt/usr/lib/systemd/system/
 	# Install R package
 	install -d debian/rapt/usr/lib/R/site-library
 	R CMD INSTALL --library=debian/rapt/usr/lib/R/site-library rapt_*.tar.gz
+	# Install man page
+	install -d debian/rapt/usr/share/man/man1
+	install -m 644 debian/raptd.1 debian/rapt/usr/share/man/man1/
+
+override_dh_installsystemd:
+	dh_installsystemd --name=raptd
 
 override_dh_auto_clean:
 	$(MAKE) -C ../daemon clean

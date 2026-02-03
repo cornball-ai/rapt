@@ -5,13 +5,6 @@ RPROFILE="/etc/R/Rprofile.site"
 
 case "$1" in
     remove|purge)
-        # Stop and disable systemd socket
-        if [ -d /run/systemd/system ]; then
-            systemctl stop raptd.socket 2>/dev/null || true
-            systemctl stop raptd.service 2>/dev/null || true
-            systemctl disable raptd.socket 2>/dev/null || true
-        fi
-
         # Remove rapt lines from Rprofile.site
         if [ -f "$RPROFILE" ]; then
             # Remove the rapt block (marker line and following line)
