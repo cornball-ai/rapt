@@ -9,8 +9,8 @@ Restart=on-failure
 RestartSec=5
 
 # Security hardening
+# Note: no ProtectSystem — apt needs write access to /usr
 NoNewPrivileges=false
-ProtectSystem=full
 ProtectHome=read-only
 PrivateTmp=true
 
