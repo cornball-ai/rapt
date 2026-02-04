@@ -21,3 +21,4 @@ pkg/debian/rapt/
 
 # R package tarball in root
 rapt_*.tar.gz
+.Rproj.user

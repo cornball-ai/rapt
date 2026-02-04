@@ -14,10 +14,17 @@ R session  →  Unix socket  →  raptd (root)  →  apt install r-cran-*
 
 A minimal C daemon (`raptd`) listens on `/run/raptd.sock` and executes apt commands on behalf of unprivileged users.
 
-## Installation
+## Installation and Usage
 
-### From .deb (recommended)
+### With .deb (recommended)
 
+Clone repo and cd:
+```bash
+git clone https://github.com/cornball-ai/rapt.git
+cd rapt
+```
+
+Build .deb:
 ```bash
 # Build
 sudo apt install debhelper r-base-dev  # as needed
@@ -30,23 +37,52 @@ sudo apt install ../rapt_0.1.0-1_amd64.deb
 
 The .deb installs everything: daemon, systemd units, R package, and enables rapt system-wide.
 
-### R package only (with sudo fallback)
-
-```bash
-R CMD INSTALL r-pkg/
-```
-
-Without the daemon, rapt falls back to `sudo apt` in interactive sessions.
-
-## Usage
-
 After installing the .deb, rapt is enabled automatically. Just use R normally:
+
 ```r
 install.packages("dplyr")
 #> Installing via apt: dplyr
 ```
 
-### Manual control
+### With the R package only (no daemon, no systemd)
+
+Clone repo and install:
+```bash
+git clone https://github.com/cornball-ai/rapt.git
+cd rapt/r-pkg/
+R CMD INSTALL .
+```
+
+Or without cloning:
+```r
+remotes::install_github("cornball-ai/rapt", subdir = "r-pkg")
+```
+
+Then in R:
+```r
+library(rapt)
+enable()
+install.packages("dplyr")  # now goes through apt via sudo
+```
+
+To make it permanent, add to `~/.Rprofile`:
+```r
+if (requireNamespace("rapt", quietly = TRUE)) rapt::enable()
+```
+
+#### Passwordless sudo for apt
+
+Without the daemon, rapt falls back to `sudo apt`. To avoid password prompts, add a sudoers rule limited to R packages:
+
+```bash
+# /etc/sudoers.d/rapt
+%users ALL=(root) NOPASSWD: /usr/bin/apt install -y r-cran-*
+%users ALL=(root) NOPASSWD: /usr/bin/apt remove -y r-cran-*
+%users ALL=(root) NOPASSWD: /usr/bin/apt install -y r-bioc-*
+%users ALL=(root) NOPASSWD: /usr/bin/apt remove -y r-bioc-*
+```
+
+## Manual control
 
 ```r
 library(rapt)
@@ -92,18 +128,6 @@ options(rapt.socket = "/run/raptd.sock")
 - Ubuntu with [r2u](https://github.com/eddelbuettel/r2u) configured
 - R >= 4.0
 - systemd (optional — for the daemon; without it, falls back to sudo/root)
-
-### Passwordless sudo for apt
-
-Without the daemon, rapt uses `sudo apt`. To avoid password prompts, add a sudoers rule limited to R packages:
-
-```bash
-# /etc/sudoers.d/rapt
-%users ALL=(root) NOPASSWD: /usr/bin/apt install -y r-cran-*
-%users ALL=(root) NOPASSWD: /usr/bin/apt remove -y r-cran-*
-%users ALL=(root) NOPASSWD: /usr/bin/apt install -y r-bioc-*
-%users ALL=(root) NOPASSWD: /usr/bin/apt remove -y r-bioc-*
-```
 
 ## How it compares to bspm
 
