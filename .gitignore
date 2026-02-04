@@ -17,8 +17,10 @@ pkg/debian/debhelper-build-stamp
 pkg/debian/files
 pkg/debian/*.debhelper
 pkg/debian/*.substvars
+pkg/debian/*.debhelper.log
 pkg/debian/rapt/
 
 # R package tarball in root
 rapt_*.tar.gz
 .Rproj.user
+rapt.Rproj

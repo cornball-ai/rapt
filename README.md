@@ -18,17 +18,20 @@ A minimal C daemon (`raptd`) listens on `/run/raptd.sock` and executes apt comma
 
 ### With .deb (recommended)
 
+Install build dependencies as needed
+```bash
+sudo apt install debhelper r-base-dev
+```
+
 Clone repo and cd:
 ```bash
 git clone https://github.com/cornball-ai/rapt.git
-cd rapt
+cd rapt/pkg
 ```
 
-Build .deb:
+Build .deb and install:
 ```bash
 # Build
-sudo apt install debhelper r-base-dev  # as needed
-cd pkg
 dpkg-buildpackage -us -uc -b
 
 # Install
