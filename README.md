@@ -63,8 +63,7 @@ remotes::install_github("cornball-ai/rapt", subdir = "r-pkg")
 
 Then in R:
 ```r
-library(rapt)
-enable()
+rapt::enable()
 install.packages("dplyr")  # now goes through apt via sudo
 ```
 
