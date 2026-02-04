@@ -1,4 +1,4 @@
-CC = gcc
+CC ?= gcc
 CFLAGS = -Wall -Wextra -Werror -O2 -g -D_FORTIFY_SOURCE=2
 LDFLAGS = -Wl,-z,relro,-z,now
 
