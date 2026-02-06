@@ -2,27 +2,34 @@
 set -e
 
 RPROFILE="/etc/R/Rprofile.site"
-MARKER="# rapt: enable system package integration"
+PROFILED="/etc/R/profile.d"
+MARKER="# Source /etc/R/profile.d/ drop-in scripts"
 
 case "$1" in
     configure)
-        # Add rapt::enable() to Rprofile.site
-        if [ -f "$RPROFILE" ]; then
-            if ! grep -q "$MARKER" "$RPROFILE"; then
-                cat >> "$RPROFILE" << 'EOF'
+        # Ensure profile.d directory exists
+        mkdir -p "$PROFILED"
 
-# rapt: enable system package integration
-if (requireNamespace("rapt", quietly = TRUE)) rapt::enable()
-EOF
-            fi
-        else
-            # Create Rprofile.site if it doesn't exist
+        # Ensure Rprofile.site exists
+        if [ ! -f "$RPROFILE" ]; then
             mkdir -p "$(dirname "$RPROFILE")"
-            cat > "$RPROFILE" << 'EOF'
-# rapt: enable system package integration
-if (requireNamespace("rapt", quietly = TRUE)) rapt::enable()
+            touch "$RPROFILE"
+        fi
+
+        # Add generic profile.d sourcing (idempotent)
+        if ! grep -q "$MARKER" "$RPROFILE"; then
+            cat >> "$RPROFILE" << 'EOF'
+
+# Source /etc/R/profile.d/ drop-in scripts
+for (f in list.files("/etc/R/profile.d", pattern = "\\.R$", full.names = TRUE))
+    source(f)
 EOF
         fi
+
+        # Drop rapt enablement into profile.d
+        cat > "$PROFILED/rapt.R" << 'EOF'
+if (requireNamespace("rapt", quietly = TRUE)) rapt::enable()
+EOF
         ;;
 esac
 

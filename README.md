@@ -38,7 +38,7 @@ dpkg-buildpackage -us -uc -b
 sudo apt install ../rapt_0.1.0-1_amd64.deb
 ```
 
-The .deb installs everything: daemon, systemd units, R package, and enables rapt system-wide.
+The .deb installs everything: daemon, systemd units, R package, and enables rapt system-wide via `/etc/R/profile.d/rapt.R`.
 
 After installing the .deb, rapt is enabled automatically. Just use R normally:
 
@@ -115,7 +115,7 @@ install.packages("dplyr")  # Back to apt
 
 ## Configuration
 
-Options (set in `~/.Rprofile` or `/etc/R/Rprofile.site`):
+Options (set in `~/.Rprofile`, `/etc/R/Rprofile.site`, or a drop-in in `/etc/R/profile.d/`):
 
 ```r
 # Allow sudo fallback when daemon unavailable (default: FALSE in non-interactive)

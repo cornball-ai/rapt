@@ -13,7 +13,7 @@
 #' }
 #'
 #' This is called automatically at startup when rapt is installed via
-#' the Debian package (added to \code{/etc/R/Rprofile.site}).
+#' the Debian package (via \code{/etc/R/profile.d/rapt.R}).
 #'
 #' @return Invisible \code{NULL}.
 #' @examples
