@@ -18,7 +18,7 @@ packages available in the r2u repository. When enabled, calls to
 \item Install remaining packages from CRAN as usual
 }
 This is called automatically at startup when rapt is installed via
-the Debian package (added to \code{/etc/R/Rprofile.site}).
+the Debian package (via \code{/etc/R/profile.d/rapt.R}).
 }
 \examples{
 \dontrun{

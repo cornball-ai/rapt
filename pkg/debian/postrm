@@ -1,17 +1,11 @@
 #!/bin/sh
 set -e
 
-RPROFILE="/etc/R/Rprofile.site"
-
 case "$1" in
     remove|purge)
-        # Remove rapt lines from Rprofile.site
-        if [ -f "$RPROFILE" ]; then
-            # Remove the rapt block (marker line and following line)
-            sed -i '/^# rapt: enable system package integration$/,/^if (requireNamespace("rapt".*$/d' "$RPROFILE"
-            # Clean up any trailing blank lines
-            sed -i -e :a -e '/^\n*$/{$d;N;ba' -e '}' "$RPROFILE" 2>/dev/null || true
-        fi
+        # Remove rapt drop-in; leave the profile.d sourcing snippet
+        # in Rprofile.site (other packages may use it)
+        rm -f /etc/R/profile.d/rapt.R
         ;;
 esac
 
