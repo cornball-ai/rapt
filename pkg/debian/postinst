@@ -10,12 +10,6 @@ case "$1" in
         # Ensure profile.d directory exists
         mkdir -p "$PROFILED"
 
-        # Ensure Rprofile.site exists
-        if [ ! -f "$RPROFILE" ]; then
-            mkdir -p "$(dirname "$RPROFILE")"
-            touch "$RPROFILE"
-        fi
-
         # Add generic profile.d sourcing (idempotent)
         if ! grep -q "$MARKER" "$RPROFILE"; then
             cat >> "$RPROFILE" << 'EOF'
