@@ -32,7 +32,7 @@ cd rapt/pkg
 Build .deb and install:
 ```bash
 # Build
-dpkg-buildpackage -us -uc -b
+dpkg-buildpackage -us -uc -b -tc
 
 # Install
 sudo apt install ../rapt_0.1.0-1_amd64.deb
