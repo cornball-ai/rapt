@@ -7,9 +7,6 @@ MARKER="# Source /etc/R/profile.d/ drop-in scripts"
 
 case "$1" in
     configure)
-        # Ensure profile.d directory exists
-        mkdir -p "$PROFILED"
-
         # Add generic profile.d sourcing (idempotent)
         if ! grep -q "$MARKER" "$RPROFILE"; then
             cat >> "$RPROFILE" << 'EOF'
@@ -19,11 +16,6 @@ for (f in list.files("/etc/R/profile.d", pattern = "\\.R$", full.names = TRUE))
     source(f)
 EOF
         fi
-
-        # Drop rapt enablement into profile.d
-        cat > "$PROFILED/rapt.R" << 'EOF'
-if (requireNamespace("rapt", quietly = TRUE)) rapt::enable()
-EOF
         ;;
 esac
 
