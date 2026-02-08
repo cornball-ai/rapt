@@ -21,6 +21,7 @@ override_dh_auto_install:
 	rm -f rapt_*.tar.gz
 	# Install profile.d directory
 	install -d debian/rapt/etc/R/profile.d
+	install -m 0644 debian/rapt.R debian/rapt/etc/R/profile.d
 	# Install man page
 	install -d debian/rapt/usr/share/man/man1
 	install -m 644 debian/raptd.1 debian/rapt/usr/share/man/man1/
