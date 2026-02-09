@@ -7,11 +7,13 @@ available_sys()
 }
 \value{
 Character vector of R package names available via apt
-  (without the \code{r-cran-} prefix).
+  (without prefix).
 }
 \description{
-Queries \code{apt-cache} for available \code{r-cran-*} packages.
-Does not require the raptd daemon.
+Returns R package names available via apt, including both
+\code{r-cran-*} and \code{r-bioc-*} packages from r2u.
+Results are cached for one hour (configurable via
+\code{options(rapt.cache_ttl)}).
 }
 \examples{
 \dontrun{
@@ -20,5 +22,5 @@ available_sys()
 }
 }
 \seealso{
-\code{\link{install_sys}}
+\code{\link{install_sys}}, \code{\link{refresh_cache}}
 }

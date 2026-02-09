@@ -12,8 +12,9 @@ install_sys(pkgs)
 Invisible \code{TRUE} on success, \code{FALSE} on failure.
 }
 \description{
-Installs R packages using \code{apt install r-cran-*}. Communicates
-with the raptd daemon if available, otherwise falls back to sudo.
+Installs R packages using apt. Communicates with the raptd daemon
+if available, otherwise falls back to sudo. Supports both
+\code{r-cran-*} and \code{r-bioc-*} packages from r2u.
 }
 \examples{
 \dontrun{

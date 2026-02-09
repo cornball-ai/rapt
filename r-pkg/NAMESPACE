@@ -5,6 +5,7 @@ export(disable)
 export(enable)
 export(install_sys)
 export(manager)
+export(refresh_cache)
 export(remove_sys)
 
 useDynLib(rapt, .registration = TRUE)

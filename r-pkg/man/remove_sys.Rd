@@ -12,8 +12,9 @@ remove_sys(pkgs)
 Invisible \code{TRUE} on success, \code{FALSE} on failure.
 }
 \description{
-Removes R packages using \code{apt remove r-cran-*}. Communicates
-with the raptd daemon if available, otherwise falls back to sudo.
+Removes R packages using apt. Communicates with the raptd daemon
+if available, otherwise falls back to sudo. Supports both
+\code{r-cran-*} and \code{r-bioc-*} packages.
 }
 \examples{
 \dontrun{
