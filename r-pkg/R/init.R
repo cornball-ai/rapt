@@ -1,5 +1,7 @@
 
 .onLoad <- function(libname, pkgname) {
-    system("apt-get update -qq")
-    refresh_cache()
+    if (is_root()) {
+        system2("apt", "update -qq")
+        refresh_cache()
+    }
 }
