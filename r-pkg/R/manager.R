@@ -26,22 +26,27 @@ ensure_cache <- function() {
 #' }
 #' @export
 refresh_cache <- function() {
-    cran <- system2("apt-cache", c("pkgnames", "r-cran-"),
-                    stdout = TRUE, stderr = NULL)
-    bioc <- system2("apt-cache", c("pkgnames", "r-bioc-"),
-                    stdout = TRUE, stderr = NULL)
+    # Update apt index first
+    system2("apt", c("update", "-qq"), stdout = FALSE, stderr = FALSE)
+
+    # Single query for both r-cran-* and r-bioc-* packages
+    lines <- readLines(pipe("apt-cache search '^r-(cran|bioc)-'"))
+
+    # Parse: "r-cran-foo - description" -> deb name is first field
+    debs <- sub(" .*", "", lines)
 
     # Build named vector: tolower(r_name) -> deb_name
+    # CRAN entries overwrite BioC if both exist for same R name
+    bioc <- debs[startsWith(debs, "r-bioc-")]
+    cran <- debs[startsWith(debs, "r-cran-")]
+
     map <- character(0)
     if (length(bioc) > 0) {
-        r_bioc <- sub("^r-bioc-", "", bioc)
-        names(bioc) <- tolower(r_bioc)
+        names(bioc) <- tolower(sub("^r-bioc-", "", bioc))
         map <- bioc
     }
     if (length(cran) > 0) {
-        r_cran <- sub("^r-cran-", "", cran)
-        names(cran) <- tolower(r_cran)
-        # cran overwrites bioc if both exist
+        names(cran) <- tolower(sub("^r-cran-", "", cran))
         map[names(cran)] <- cran
     }
 

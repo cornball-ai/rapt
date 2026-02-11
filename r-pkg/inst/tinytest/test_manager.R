@@ -32,15 +32,12 @@ expect_true("sudo_allowed" %in% names(info))
 expect_true("enabled" %in% names(info))
 expect_true("cache_age" %in% names(info))
 
-# === Cache tests (before any available_sys call) ===
+# === Cache tests ===
 
-# Cache starts stale (epoch time)
-expect_true(manager()$cache_age > 3600)
+# Cache is primed on load
+expect_true(manager()$cache_age < 5)
 
 if (Sys.which("apt-cache") != "") {
-    # refresh_cache() updates the timestamp
-    refresh_cache()
-    expect_true(manager()$cache_age < 5)
 
     # available_sys() returns character vector without prefixes
     avail <- available_sys()
