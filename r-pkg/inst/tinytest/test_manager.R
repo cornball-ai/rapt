@@ -35,8 +35,7 @@ expect_true("cache_age" %in% names(info))
 # === Cache tests (before any available_sys call) ===
 
 # Cache starts stale (epoch time)
-# inverting as we force a read at startup
-expect_true(manager()$cache_age < 60)
+expect_true(manager()$cache_age > 3600)
 
 if (Sys.which("apt-cache") != "") {
     # refresh_cache() updates the timestamp
