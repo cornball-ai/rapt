@@ -9,9 +9,10 @@ refresh_cache()
 Invisible \code{NULL}.
 }
 \description{
-Forces a refresh of the cached mapping between R package names and
-their apt package names. Call this after \code{apt update} to pick
-up newly available packages.
+Updates the apt index and refreshes the cached mapping between R
+package names and their apt package names. Discovers all
+\code{r-<repo>-<pkg>} packages (CRAN, Bioconductor, and any other
+registered repositories).
 }
 \examples{
 \dontrun{

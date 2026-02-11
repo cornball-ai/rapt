@@ -10,8 +10,8 @@ Character vector of R package names available via apt
   (without prefix).
 }
 \description{
-Returns R package names available via apt, including both
-\code{r-cran-*} and \code{r-bioc-*} packages from r2u.
+Returns R package names available via apt, including packages
+from any registered repository (CRAN, Bioconductor, etc.).
 Results are cached for one hour (configurable via
 \code{options(rapt.cache_ttl)}).
 }

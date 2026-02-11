@@ -46,8 +46,7 @@ if (Sys.which("apt-cache") != "") {
     avail <- available_sys()
     expect_true(is.character(avail))
     expect_true(length(avail) > 0)
-    expect_false(any(grepl("^r-cran-", avail)))
-    expect_false(any(grepl("^r-bioc-", avail)))
+    expect_false(any(grepl("^r-[a-z]+-", avail)))
 
     # r_to_deb - cran packages
     expect_equal(rapt:::r_to_deb("dplyr"), "r-cran-dplyr")

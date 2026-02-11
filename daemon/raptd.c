@@ -25,29 +25,36 @@
 #define MAX_PKGS 256
 #define MAX_PKG_NAME 128
 
-/* Validate deb package name: must match r-(cran|bioc)-[a-z0-9._]+ */
+/* Validate deb package name: must match r-<repo>-<name> */
 static int valid_deb_pkg(const char *name) {
     if (!name || !*name)
         return 0;
     if (strlen(name) > MAX_PKG_NAME)
         return 0;
 
-    /* Must start with r-cran- or r-bioc- */
-    int prefix_len = 0;
-    if (strncmp(name, "r-cran-", 7) == 0)
-        prefix_len = 7;
-    else if (strncmp(name, "r-bioc-", 7) == 0)
-        prefix_len = 7;
-    else
+    /* Must start with r- */
+    if (name[0] != 'r' || name[1] != '-')
         return 0;
 
-    /* Must have at least one char after prefix */
-    if (!name[prefix_len])
+    /* Repo part: at least one lowercase letter */
+    const char *p = name + 2;
+    if (!islower(*p))
+        return 0;
+    while (islower(*p))
+        p++;
+
+    /* Must have hyphen after repo */
+    if (*p != '-')
+        return 0;
+    p++;
+
+    /* Must have at least one char after repo- */
+    if (!*p)
         return 0;
 
-    /* Rest must be lowercase alphanumeric, dot, or underscore */
-    for (const char *p = name + prefix_len; *p; p++) {
-        if (!islower(*p) && !isdigit(*p) && *p != '.' && *p != '_')
+    /* Package name: lowercase alphanumeric and dots */
+    for (; *p; p++) {
+        if (!islower(*p) && !isdigit(*p) && *p != '.')
             return 0;
     }
     return 1;

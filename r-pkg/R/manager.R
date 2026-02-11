@@ -15,9 +15,10 @@ ensure_cache <- function() {
 
 #' Refresh the package cache
 #'
-#' Forces a refresh of the cached mapping between R package names and
-#' their apt package names. Call this after \code{apt update} to pick
-#' up newly available packages.
+#' Updates the apt index and refreshes the cached mapping between R
+#' package names and their apt package names. Discovers all
+#' \code{r-<repo>-<pkg>} packages (CRAN, Bioconductor, and any other
+#' registered repositories).
 #'
 #' @return Invisible \code{NULL}.
 #' @examples
@@ -26,30 +27,43 @@ ensure_cache <- function() {
 #' }
 #' @export
 refresh_cache <- function() {
-    cran <- system2("apt-cache", c("pkgnames", "r-cran-"),
-                    stdout = TRUE, stderr = NULL)
-    bioc <- system2("apt-cache", c("pkgnames", "r-bioc-"),
-                    stdout = TRUE, stderr = NULL)
+    # Update apt index for fresh results
+    if (is_root()) {
+        system2("apt", c("update", "-qq"), stdout = FALSE, stderr = FALSE)
+    } else if (isTRUE(getOption("rapt.sudo"))) {
+        system2("sudo", c("apt", "update", "-qq"),
+                stdout = FALSE, stderr = FALSE)
+    }
+
+    # Query all r-<repo>-<pkg> packages
+    lines <- system2("apt-cache", c("search", "^r-[a-z]+-"),
+                     stdout = TRUE, stderr = NULL)
+    debs <- sub(" .*", "", lines)
+
+    # Keep only valid r-<repo>-<pkg> names
+    debs <- grep("^r-[a-z]+-[a-z0-9.]+$", debs, value = TRUE)
+
+    # Extract R package name (everything after r-<repo>-)
+    r_names <- sub("^r-[a-z]+-", "", debs)
 
     # Build named vector: tolower(r_name) -> deb_name
+    # CRAN takes priority over other repos for the same name
+    is_cran <- startsWith(debs, "r-cran-")
     map <- character(0)
-    if (length(bioc) > 0) {
-        r_bioc <- sub("^r-bioc-", "", bioc)
-        names(bioc) <- tolower(r_bioc)
-        map <- bioc
+
+    if (any(!is_cran)) {
+        other <- debs[!is_cran]
+        names(other) <- tolower(sub("^r-[a-z]+-", "", other))
+        map <- other
     }
-    if (length(cran) > 0) {
-        r_cran <- sub("^r-cran-", "", cran)
-        names(cran) <- tolower(r_cran)
-        # cran overwrites bioc if both exist
-        map[names(cran)] <- cran
+    if (any(is_cran)) {
+        cran_debs <- debs[is_cran]
+        names(cran_debs) <- tolower(sub("^r-cran-", "", cran_debs))
+        map[names(cran_debs)] <- cran_debs
     }
 
     .pkg_cache$map  <- map
-    .pkg_cache$pkgs <- sort(unique(c(
-        sub("^r-cran-", "", cran),
-        sub("^r-bioc-", "", bioc)
-    )))
+    .pkg_cache$pkgs <- sort(unique(r_names))
     .pkg_cache$time <- Sys.time()
     invisible(NULL)
 }
@@ -57,8 +71,8 @@ refresh_cache <- function() {
 #' Convert R package names to deb package names
 #'
 #' Uses the cached package list to return the correct deb name
-#' (\code{r-cran-*} or \code{r-bioc-*}). Defaults to \code{r-cran-}
-#' for packages not found in the cache.
+#' (e.g., \code{r-cran-*}, \code{r-bioc-*}). Defaults to
+#' \code{r-cran-} prefix for packages not found in the cache.
 #'
 #' @param pkgs Character vector of R package names.
 #' @return Character vector of deb package names.
@@ -155,8 +169,8 @@ remove_sys <- function(pkgs) {
 
 #' List available system packages
 #'
-#' Returns R package names available via apt, including both
-#' \code{r-cran-*} and \code{r-bioc-*} packages from r2u.
+#' Returns R package names available via apt, including packages
+#' from any registered repository (CRAN, Bioconductor, etc.).
 #' Results are cached for one hour (configurable via
 #' \code{options(rapt.cache_ttl)}).
 #'
