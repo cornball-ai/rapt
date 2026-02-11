@@ -90,8 +90,9 @@ static int run_apt(const char *action, char **pkgs, int npkgs, int client_fd) {
         argv[0] = "apt";
         argv[1] = (char *)action;
         argv[2] = "-y";
+        argv[3] = "--no-install-recommends";
 
-        int argc = 3;
+        int argc = 4;
         for (int i = 0; i < npkgs; i++)
             argv[argc++] = pkgs[i];
         argv[argc] = NULL;
