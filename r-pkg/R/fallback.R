@@ -46,11 +46,9 @@ fallback_apt <- function(action, deb_pkgs) {
     message("raptd not available, falling back to ",
             if (is_root()) "direct apt" else "sudo")
     if (is_root()) {
-        status <- system2("apt", c(action, "-y", "--no-install-recommends",
-                                   deb_pkgs))
+        status <- system2("apt", c(action, "-y", deb_pkgs))
     } else {
-        status <- system2("sudo", c("apt", action, "-y",
-                                    "--no-install-recommends", deb_pkgs))
+        status <- system2("sudo", c("apt", action, "-y", deb_pkgs))
     }
 
     if (status != 0) {
