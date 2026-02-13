@@ -90,7 +90,7 @@ static int run_apt(const char *action, char **pkgs, int npkgs, int client_fd) {
         close(pipefd[1]);
 
         /* Build argument list: apt <action> -y pkg1 pkg2 ... */
-        char **argv = calloc(npkgs + 5, sizeof(char *));
+        char **argv = calloc(npkgs + 4, sizeof(char *));
         if (!argv)
             _exit(127);
 
@@ -99,7 +99,7 @@ static int run_apt(const char *action, char **pkgs, int npkgs, int client_fd) {
         argv[2] = "-y";
         argv[3] = "--no-install-recommends";
 
-        int argc = 4;
+        int argc = 3;
         for (int i = 0; i < npkgs; i++)
             argv[argc++] = pkgs[i];
         argv[argc] = NULL;
