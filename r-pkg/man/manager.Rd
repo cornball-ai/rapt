@@ -12,10 +12,12 @@ A list with components:
   \item{socket_path}{Character; path to the Unix socket.}
   \item{sudo_allowed}{Logical; is sudo fallback enabled?}
   \item{enabled}{Logical; is the install.packages() hook active?}
+  \item{cache_age}{Numeric; cache age in seconds (Inf if never refreshed).}
 }
 }
 \description{
-Returns information about the current rapt configuration and daemon status.
+Returns information about the current rapt configuration, daemon
+status, and cache age.
 }
 \examples{
 manager()

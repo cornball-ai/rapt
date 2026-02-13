@@ -25,25 +25,39 @@
 #define MAX_PKGS 256
 #define MAX_PKG_NAME 128
 
-/* Validate package name: only alphanumeric, dot, underscore */
-static int valid_pkg_name(const char *name) {
+/* Validate deb package name: must match r-<repo>-<name> */
+static int valid_deb_pkg(const char *name) {
     if (!name || !*name)
         return 0;
-    if (strlen(name) > MAX_PKG_NAME - 16)  /* room for "r-cran-" prefix */
+    if (strlen(name) > MAX_PKG_NAME)
         return 0;
-    for (const char *p = name; *p; p++) {
-        if (!isalnum(*p) && *p != '.' && *p != '_')
+
+    /* Must start with r- */
+    if (name[0] != 'r' || name[1] != '-')
+        return 0;
+
+    /* Repo part: at least one lowercase letter */
+    const char *p = name + 2;
+    if (!islower(*p))
+        return 0;
+    while (islower(*p))
+        p++;
+
+    /* Must have hyphen after repo */
+    if (*p != '-')
+        return 0;
+    p++;
+
+    /* Must have at least one char after repo- */
+    if (!*p)
+        return 0;
+
+    /* Package name: lowercase alphanumeric and dots */
+    for (; *p; p++) {
+        if (!islower(*p) && !isdigit(*p) && *p != '.')
             return 0;
     }
     return 1;
-}
-
-/* Convert R package name to debian package name */
-static void r_to_deb(const char *r_name, char *deb_name, size_t len) {
-    snprintf(deb_name, len, "r-cran-%s", r_name);
-    /* lowercase everything after prefix */
-    for (char *p = deb_name + 7; *p; p++)
-        *p = tolower(*p);
 }
 
 /* Execute apt and capture output */
@@ -76,7 +90,7 @@ static int run_apt(const char *action, char **pkgs, int npkgs, int client_fd) {
         close(pipefd[1]);
 
         /* Build argument list: apt <action> -y pkg1 pkg2 ... */
-        char **argv = calloc(npkgs + 5, sizeof(char *));
+        char **argv = calloc(npkgs + 4, sizeof(char *));
         if (!argv)
             _exit(127);
 
@@ -85,11 +99,8 @@ static int run_apt(const char *action, char **pkgs, int npkgs, int client_fd) {
         argv[2] = "-y";
 
         int argc = 3;
-        char deb_name[MAX_PKG_NAME];
-        for (int i = 0; i < npkgs; i++) {
-            r_to_deb(pkgs[i], deb_name, sizeof(deb_name));
-            argv[argc++] = strdup(deb_name);
-        }
+        for (int i = 0; i < npkgs; i++)
+            argv[argc++] = pkgs[i];
         argv[argc] = NULL;
 
         /* Set minimal safe environment */
@@ -182,7 +193,7 @@ static void handle_client(int client_fd) {
 
     char *tok;
     while ((tok = strtok_r(NULL, " \t", &saveptr)) != NULL && npkgs < MAX_PKGS) {
-        if (!valid_pkg_name(tok)) {
+        if (!valid_deb_pkg(tok)) {
             dprintf(client_fd, "STATUS 1\nERROR: invalid package name '%s'\n", tok);
             close(client_fd);
             return;
