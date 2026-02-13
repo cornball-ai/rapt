@@ -68,6 +68,26 @@ refresh_cache <- function() {
     invisible(NULL)
 }
 
+#' Destroy the package cache
+#'
+#' Clears the cached mapping between R package names and apt package
+#' names, freeing memory. The cache will be rebuilt on the next call
+#' to \code{\link{available_sys}} or \code{\link{install_sys}}.
+#'
+#' @return Invisible \code{NULL}.
+#' @examples
+#' \dontrun{
+#' destroy_cache()
+#' }
+#' @seealso \code{\link{refresh_cache}}
+#' @export
+destroy_cache <- function() {
+    .pkg_cache$map  <- character(0)
+    .pkg_cache$pkgs <- character(0)
+    .pkg_cache$time <- as.POSIXct(0, origin = "1970-01-01")
+    invisible(NULL)
+}
+
 #' Convert R package names to deb package names
 #'
 #' Uses the cached package list to return the correct deb name
