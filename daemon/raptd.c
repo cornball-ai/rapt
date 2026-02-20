@@ -90,7 +90,7 @@ static int run_apt(const char *action, char **pkgs, int npkgs, int client_fd) {
         close(pipefd[1]);
 
         /* Build argument list: apt <action> -y pkg1 pkg2 ... */
-        char **argv = calloc(npkgs + 4, sizeof(char *));
+        char **argv = calloc(npkgs + 3, sizeof(char *));
         if (!argv)
             _exit(127);
 

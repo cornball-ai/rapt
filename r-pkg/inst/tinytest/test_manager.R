@@ -77,6 +77,17 @@ if (Sys.which("apt-cache") != "") {
     expect_true((t1 - t0) < 0.1,
                 info = "cached available_sys() should be near-instant")
     expect_equal(avail, avail2)
+
+    # destroy_cache() clears the cache
+    destroy_cache()
+    expect_true(manager()$cache_age > 3600)
+    expect_equal(length(rapt:::.pkg_cache$pkgs), 0)
+    expect_equal(length(rapt:::.pkg_cache$map), 0)
+
+    # Cache rebuilds on next available_sys() call
+    avail3 <- available_sys()
+    expect_true(length(avail3) > 0)
+    expect_true(manager()$cache_age < 5)
 }
 
 # === Edge cases ===
