@@ -12,8 +12,10 @@ case "$1" in
             cat >> "$RPROFILE" << 'EOF'
 
 # Source /etc/R/profile.d/ drop-in scripts
-for (f in list.files("/etc/R/profile.d", pattern = "\\.R$", full.names = TRUE))
-    source(f)
+local({
+    for (f in list.files("/etc/R/profile.d", pattern = "\\.R$", full.names = TRUE))
+        source(f, local = FALSE)
+})
 EOF
         fi
         ;;
