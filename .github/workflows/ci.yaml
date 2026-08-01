@@ -38,6 +38,12 @@ jobs:
           R CMD INSTALL rapt_*.tar.gz
           Rscript -e 'tinytest::test_package("rapt")'
 
+      - name: Upload
+        uses: actions/upload-artifact@v7
+        with:
+          name: r_package
+          path: rapt_*.tar.gz
+
   daemon:
     runs-on: ubuntu-latest
 
@@ -70,3 +76,8 @@ jobs:
       - name: Check Package
         run: dpkg -c rapt_*.deb
         
+      - name: Upload Package
+        uses: actions/upload-artifact@v7
+        with:
+          name: r_package
+          path: rapt_*.deb
