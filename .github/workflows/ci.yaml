@@ -62,7 +62,7 @@ jobs:
         uses: eddelbuettel/github-actions/r-ci@master
 
       - name: Debian Dependencies
-        run: run.sh install_aptget debhelper
+        run: ./run.sh install_aptget debhelper
 
       - name: Debian Build
         run: cd pkg && dpkg-buildpackage -rfakeroot -us -uc -b -tc
