@@ -1,9 +1,11 @@
 name: ci
 
 on:
-  #push:
   pull_request:
   workflow_dispatch:
+  push:
+    tags:
+      - "v*"
 
 env:
   _R_CHECK_FORCE_SUGGESTS_: "false"
@@ -75,20 +77,48 @@ jobs:
 
       - name: Check Package
         run: dpkg -c rapt_*.deb
-        
+
       - name: Upload Package
         uses: actions/upload-artifact@v7
         with:
           name: deb_package
           path: rapt_*.deb
 
+      # Dry run: proves the repository still builds on every pull request.
+      # The 'publish' job below does the same thing for real.
       - name: Update Repository
+        run: tools/mkrepo.sh rapt_*.deb
+
+  publish:
+    needs: deb-package
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      # Always publish from master, as a tag build checks out a detached HEAD
+      - uses: actions/checkout@v7
+        with:
+          ref: master
+
+      - name: Fetch Package
+        uses: actions/download-artifact@v8
+        with:
+          name: deb_package
+
+      - name: Dependencies
+        run: sudo apt-get install -y apt-utils
+
+      - name: Update Repository
+        run: tools/mkrepo.sh rapt_*.deb
+
+      - name: Commit and Push
         run: |
-          cp -vax rapt_*.deb docs/
-          cd docs/
-          apt-ftparchive packages . > Packages
-          cat Packages | gzip > Packages.gz
-          apt-ftparchive -c repo.conf release . > Release
-          # InRelease and Packages should be signed, ideally
-          cp -vax Release InRelease
-          ls -l
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs
+          git diff --quiet --cached || git commit -m "Update apt repository"
+          git push origin master
