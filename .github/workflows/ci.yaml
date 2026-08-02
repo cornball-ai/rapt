@@ -1,7 +1,9 @@
 name: ci
 
 on:
+  #push:
   pull_request:
+  workflow_dispatch:
 
 env:
   _R_CHECK_FORCE_SUGGESTS_: "false"
@@ -11,18 +13,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Setup
         uses: eddelbuettel/github-actions/r-ci@master
 
       - name: Dependencies
+        # Direct call instead of relying on 'run.sh install_deps'
+        # as the DESCRIPTION file is in subdirectory r-pkg
         run: ./run.sh install_r tinytest
 
       - name: Build
+        # Direct call of build instead of relying on 'run.sh run_tests'
+        # as the packages is in subdirectory r-pkg
         run: R CMD build r-pkg
 
       - name: Check
+        # Direct call of tests instead of relying on 'run.sh run_tests'
+        # as the packages is in subdirectory r-pkg
         run: R CMD check rapt_*.tar.gz --no-manual
 
       - name: Test
@@ -30,11 +38,17 @@ jobs:
           R CMD INSTALL rapt_*.tar.gz
           Rscript -e 'tinytest::test_package("rapt")'
 
+      - name: Upload
+        uses: actions/upload-artifact@v7
+        with:
+          name: r_package
+          path: rapt_*.tar.gz
+
   daemon:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Build daemon
         run: make -C daemon
@@ -43,3 +57,38 @@ jobs:
         run: |
           ./daemon/raptd --help || true
           file ./daemon/raptd
+
+  deb-package:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Setup
+        uses: eddelbuettel/github-actions/r-ci@master
+
+      - name: Debian Dependencies
+        run: ./run.sh install_aptget debhelper apt-utils
+
+      - name: Debian Build
+        run: cd pkg && dpkg-buildpackage -rfakeroot -us -uc -b -tc
+
+      - name: Check Package
+        run: dpkg -c rapt_*.deb
+        
+      - name: Upload Package
+        uses: actions/upload-artifact@v7
+        with:
+          name: deb_package
+          path: rapt_*.deb
+
+      - name: Update Repository
+        run: |
+          cp -vax rapt_*.deb docs/
+          cd docs/
+          apt-ftparchive packages . > Packages
+          cat Packages | gzip > Packages.gz
+          apt-ftparchive -c repo.conf release . > Release
+          # InRelease and Packages should be signed, ideally
+          cp -vax Release InRelease
+          ls -l
