@@ -68,7 +68,7 @@ jobs:
         uses: eddelbuettel/github-actions/r-ci@master
 
       - name: Debian Dependencies
-        run: ./run.sh install_aptget debhelper
+        run: ./run.sh install_aptget debhelper apt-utils
 
       - name: Debian Build
         run: cd pkg && dpkg-buildpackage -rfakeroot -us -uc -b -tc
@@ -81,3 +81,14 @@ jobs:
         with:
           name: deb_package
           path: rapt_*.deb
+
+      - name: Update Repository
+        run: |
+          cp -vax rapt_*.deb docs/
+          cd docs/
+          apt-ftparchive packages . > Packages
+          cat Packages | gzip > Packages.gz
+          apt-ftparchive -c repo.conf release . > Release
+          # InRelease and Packages should be signed, ideally
+          cp -vax Release InRelease
+          ls -l
