@@ -72,6 +72,29 @@ jobs:
       - name: Debian Dependencies
         run: ./run.sh install_aptget debhelper apt-utils
 
+      # apt indexes checksums per version, so two different .deb files sharing
+      # one version make every client that already fetched the old one whine
+      # about a hash mismatch. A tag must therefore match debian/changelog, and
+      # a snapshot gets a version of its own.
+      - name: Version
+        run: |
+          cur=$(cd pkg && dpkg-parsechangelog -S Version)
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+              want=${GITHUB_REF_NAME#v}
+              if [ "$cur" != "$want" ]; then
+                  echo "tag ${GITHUB_REF_NAME} wants ${want}, pkg/debian/changelog has ${cur}"
+                  exit 1
+              fi
+          elif [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
+              snap="${cur}+git$(date -u +%Y%m%d).$(git rev-parse --short HEAD)"
+              { printf 'rapt (%s) unstable; urgency=medium\n\n  * Snapshot build.\n\n -- github-actions <actions@github.com>  %s\n\n' \
+                     "$snap" "$(date -uR)"
+                cat pkg/debian/changelog
+              } > changelog.new
+              mv changelog.new pkg/debian/changelog
+              echo "building snapshot ${snap}"
+          fi
+
       - name: Debian Build
         run: cd pkg && dpkg-buildpackage -rfakeroot -us -uc -b -tc
 
