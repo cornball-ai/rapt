@@ -121,11 +121,16 @@ jobs:
     permissions:
       contents: write
 
+    env:
+      # A dispatch publishes into the branch it was run against, so this job
+      # can be tested before it reaches master. A tag build has nowhere to
+      # push, as it checks out a detached HEAD, so it targets master.
+      TARGET: ${{ github.event_name == 'workflow_dispatch' && github.ref_name || 'master' }}
+
     steps:
-      # Always publish from master, as a tag build checks out a detached HEAD
       - uses: actions/checkout@v7
         with:
-          ref: master
+          ref: ${{ env.TARGET }}
 
       - name: Fetch Package
         uses: actions/download-artifact@v8
@@ -144,4 +149,4 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A docs
           git diff --quiet --cached || git commit -m "Update apt repository"
-          git push origin master
+          git push origin "HEAD:${TARGET}"
