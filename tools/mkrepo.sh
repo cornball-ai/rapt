@@ -16,6 +16,14 @@ for deb in "$@"; do
 done
 
 cd "$repo"
+
+# Drop all but the newest few, or docs/ grows without bound and Packages
+# lists every build ever made.
+keep=${RAPT_KEEP:-3}
+ls -1 rapt_*.deb 2>/dev/null | sort -V | head -n "-${keep}" | while read -r old; do
+    rm -v "$old"
+done
+
 apt-ftparchive packages . > Packages
 gzip -9 -c Packages > Packages.gz
 apt-ftparchive -c repo.conf release . > Release
