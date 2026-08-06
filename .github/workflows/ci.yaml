@@ -80,13 +80,18 @@ jobs:
         run: |
           cur=$(cd pkg && dpkg-parsechangelog -S Version)
           if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+              # Accept the tag with or without the Debian revision, so both
+              # v0.1.0 and v0.1.0-1 match a changelog reading 0.1.0-1.
               want=${GITHUB_REF_NAME#v}
-              if [ "$cur" != "$want" ]; then
+              if [ "$cur" != "$want" ] && [ "${cur%-*}" != "$want" ]; then
                   echo "tag ${GITHUB_REF_NAME} wants ${want}, pkg/debian/changelog has ${cur}"
                   exit 1
               fi
           elif [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
-              snap="${cur}+git$(date -u +%Y%m%d).$(git rev-parse --short HEAD)"
+              # The run number, not just the date, as two dispatches of one
+              # commit on one day would otherwise share a version while the
+              # generated changelog date makes their .deb files differ.
+              snap="${cur}+git$(date -u +%Y%m%d).${GITHUB_RUN_NUMBER}.$(git rev-parse --short HEAD)"
               { printf 'rapt (%s) unstable; urgency=medium\n\n  * Snapshot build.\n\n -- github-actions <actions@github.com>  %s\n\n' \
                      "$snap" "$(date -uR)"
                 cat pkg/debian/changelog
