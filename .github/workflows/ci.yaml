@@ -126,6 +126,13 @@ jobs:
     permissions:
       contents: write
 
+    # Two publishes at once would both regenerate docs/ and race to push, and
+    # the loser cannot rebase its way out because the conflicting files are a
+    # .deb and a gzip. Serialise per target branch instead.
+    concurrency:
+      group: publish-${{ github.event_name == 'workflow_dispatch' && github.ref_name || 'master' }}
+      cancel-in-progress: false
+
     env:
       # A dispatch publishes into the branch it was run against, so this job
       # can be tested before it reaches master. A tag build has nowhere to
