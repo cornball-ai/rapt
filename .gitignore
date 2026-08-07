@@ -10,6 +10,8 @@ r-pkg/*.tar.gz
 # Debian build artifacts (in pkg/)
 *.deb
 *.ddeb
+# ... except the published ones in the apt repository
+!docs/*.deb
 *.buildinfo
 *.changes
 pkg/debian/.debhelper/

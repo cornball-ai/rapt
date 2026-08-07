@@ -1,9 +1,11 @@
 name: ci
 
 on:
-  #push:
   pull_request:
   workflow_dispatch:
+  push:
+    tags:
+      - "v*"
 
 env:
   _R_CHECK_FORCE_SUGGESTS_: "false"
@@ -70,25 +72,93 @@ jobs:
       - name: Debian Dependencies
         run: ./run.sh install_aptget debhelper apt-utils
 
+      # apt indexes checksums per version, so two different .deb files sharing
+      # one version make every client that already fetched the old one whine
+      # about a hash mismatch. A tag must therefore match debian/changelog, and
+      # a snapshot gets a version of its own.
+      - name: Version
+        run: |
+          cur=$(cd pkg && dpkg-parsechangelog -S Version)
+          if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
+              # Accept the tag with or without the Debian revision, so both
+              # v0.1.0 and v0.1.0-1 match a changelog reading 0.1.0-1.
+              want=${GITHUB_REF_NAME#v}
+              if [ "$cur" != "$want" ] && [ "${cur%-*}" != "$want" ]; then
+                  echo "tag ${GITHUB_REF_NAME} wants ${want}, pkg/debian/changelog has ${cur}"
+                  exit 1
+              fi
+          elif [ "${GITHUB_EVENT_NAME}" = "workflow_dispatch" ]; then
+              # The run number, not just the date, as two dispatches of one
+              # commit on one day would otherwise share a version while the
+              # generated changelog date makes their .deb files differ.
+              snap="${cur}+git$(date -u +%Y%m%d).${GITHUB_RUN_NUMBER}.$(git rev-parse --short HEAD)"
+              { printf 'rapt (%s) unstable; urgency=medium\n\n  * Snapshot build.\n\n -- github-actions <actions@github.com>  %s\n\n' \
+                     "$snap" "$(date -uR)"
+                cat pkg/debian/changelog
+              } > changelog.new
+              mv changelog.new pkg/debian/changelog
+              echo "building snapshot ${snap}"
+          fi
+
       - name: Debian Build
         run: cd pkg && dpkg-buildpackage -rfakeroot -us -uc -b -tc
 
       - name: Check Package
         run: dpkg -c rapt_*.deb
-        
+
       - name: Upload Package
         uses: actions/upload-artifact@v7
         with:
           name: deb_package
           path: rapt_*.deb
 
+      # Dry run: proves the repository still builds on every pull request.
+      # The 'publish' job below does the same thing for real.
       - name: Update Repository
+        run: tools/mkrepo.sh rapt_*.deb
+
+  publish:
+    needs: deb-package
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    # Two publishes at once would both regenerate docs/ and race to push, and
+    # the loser cannot rebase its way out because the conflicting files are a
+    # .deb and a gzip. Serialise per target branch instead.
+    concurrency:
+      group: publish-${{ github.event_name == 'workflow_dispatch' && github.ref_name || 'master' }}
+      cancel-in-progress: false
+
+    env:
+      # A dispatch publishes into the branch it was run against, so this job
+      # can be tested before it reaches master. A tag build has nowhere to
+      # push, as it checks out a detached HEAD, so it targets master.
+      TARGET: ${{ github.event_name == 'workflow_dispatch' && github.ref_name || 'master' }}
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ env.TARGET }}
+
+      - name: Fetch Package
+        uses: actions/download-artifact@v8
+        with:
+          name: deb_package
+
+      - name: Dependencies
+        run: sudo apt-get install -y apt-utils
+
+      - name: Update Repository
+        run: tools/mkrepo.sh rapt_*.deb
+
+      - name: Commit and Push
         run: |
-          cp -vax rapt_*.deb docs/
-          cd docs/
-          apt-ftparchive packages . > Packages
-          cat Packages | gzip > Packages.gz
-          apt-ftparchive -c repo.conf release . > Release
-          # InRelease and Packages should be signed, ideally
-          cp -vax Release InRelease
-          ls -l
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A docs
+          git diff --quiet --cached || git commit -m "Update apt repository"
+          git push origin "HEAD:${TARGET}"

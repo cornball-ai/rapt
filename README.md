@@ -16,6 +16,26 @@ A minimal C daemon (`raptd`) listens on `/run/raptd.sock` and executes apt comma
 
 ## Installation and Usage
 
+### From the apt repository
+
+Prebuilt amd64 packages are published to <https://cornball-ai.github.io/rapt>. The
+repository is unsigned, so clients have to opt in with `Trusted: yes`:
+
+```bash
+sudo tee /etc/apt/sources.list.d/rapt.sources > /dev/null <<'EOF'
+Types: deb
+URIs: https://cornball-ai.github.io/rapt
+Suites: ./
+Components:
+Trusted: yes
+Enabled: yes
+Architectures: amd64
+EOF
+
+sudo apt update
+sudo apt install rapt
+```
+
 ### With .deb (recommended)
 
 Install build dependencies as needed
