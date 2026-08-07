@@ -17,8 +17,14 @@ packages available in the r2u repository. When enabled, calls to
 \item Install those packages via \code{install_sys()}
 \item Install remaining packages from CRAN as usual
 }
+}
+\details{
 This is called automatically at startup when rapt is installed via
 the Debian package (via \code{/etc/R/profile.d/rapt.R}).
+
+Option \sQuote{rapt.verbose} can be set to \sQuote{FALSE} to suppress
+the message.
+
 }
 \examples{
 \dontrun{

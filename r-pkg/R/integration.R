@@ -15,6 +15,9 @@
 #' This is called automatically at startup when rapt is installed via
 #' the Debian package (via \code{/etc/R/profile.d/rapt.R}).
 #'
+#' Option \sQuote{rapt.verbose} can be set to \sQuote{FALSE} to suppress
+#' the message.
+#'
 #' @return Invisible \code{NULL}.
 #' @examples
 #' \dontrun{
@@ -71,7 +74,8 @@ enable <- function() {
     if (was_locked) lockBinding("install.packages", ns)
 
     options(rapt.enabled = TRUE)
-    message("rapt enabled - install.packages() will use apt when possible")
+    if (getOption("rapt.verbose", TRUE))
+        message("rapt enabled - install.packages() will use apt when possible")
     invisible(NULL)
 }
 
