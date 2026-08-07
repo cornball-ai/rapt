@@ -63,6 +63,24 @@ jobs:
   deb-package:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+
+    # Publishes share one group so they serialise, as two of them would both
+    # regenerate docs/ and race to push, and the loser cannot rebase its way
+    # out because the conflicting files are a .deb and a gzip. Ordinary builds
+    # get a group per ref so pull requests still run in parallel.
+    concurrency:
+      group: ${{ (github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')) && 'publish' || format('build-{0}', github.ref) }}
+      cancel-in-progress: false
+
+    env:
+      PUBLISH: ${{ github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v') }}
+      # A dispatch publishes into the branch it was run against, so this can be
+      # tested before it reaches master. A tag build has nowhere of its own to
+      # push, as it checks out a detached HEAD, so it targets master.
+      TARGET: ${{ github.event_name == 'workflow_dispatch' && github.ref_name || 'master' }}
+
     steps:
       - uses: actions/checkout@v7
 
@@ -106,57 +124,26 @@ jobs:
       - name: Check Package
         run: dpkg -c rapt_*.deb
 
-      - name: Upload Package
-        uses: actions/upload-artifact@v7
-        with:
-          name: deb_package
-          path: rapt_*.deb
-
-      # Dry run: proves the repository still builds on every pull request.
-      # The 'publish' job below does the same thing for real.
+      # Dry run, so a pull request still proves the repository builds. The
+      # publish steps below do the real thing against the target branch.
       - name: Update Repository
+        if: env.PUBLISH != 'true'
         run: tools/mkrepo.sh rapt_*.deb
 
-  publish:
-    needs: deb-package
-    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')
-
-    runs-on: ubuntu-latest
-
-    permissions:
-      contents: write
-
-    # Two publishes at once would both regenerate docs/ and race to push, and
-    # the loser cannot rebase its way out because the conflicting files are a
-    # .deb and a gzip. Serialise per target branch instead.
-    concurrency:
-      group: publish-${{ github.event_name == 'workflow_dispatch' && github.ref_name || 'master' }}
-      cancel-in-progress: false
-
-    env:
-      # A dispatch publishes into the branch it was run against, so this job
-      # can be tested before it reaches master. A tag build has nowhere to
-      # push, as it checks out a detached HEAD, so it targets master.
-      TARGET: ${{ github.event_name == 'workflow_dispatch' && github.ref_name || 'master' }}
-
-    steps:
-      - uses: actions/checkout@v7
+      # The target branch goes in a subdirectory because the build above may be
+      # sitting on a tag, and a detached HEAD has no branch to push back to.
+      - name: Checkout Target
+        if: env.PUBLISH == 'true'
+        uses: actions/checkout@v7
         with:
           ref: ${{ env.TARGET }}
+          path: target
 
-      - name: Fetch Package
-        uses: actions/download-artifact@v8
-        with:
-          name: deb_package
-
-      - name: Dependencies
-        run: sudo apt-get install -y apt-utils
-
-      - name: Update Repository
-        run: tools/mkrepo.sh rapt_*.deb
-
-      - name: Commit and Push
+      - name: Publish Repository
+        if: env.PUBLISH == 'true'
         run: |
+          target/tools/mkrepo.sh rapt_*.deb
+          cd target
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A docs
