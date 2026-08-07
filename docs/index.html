@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>rapt apt repository</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --fg: #1a1a1a;
+    --bg: #ffffff;
+    --muted: #5a5a5a;
+    --rule: #e2e2e2;
+    --code-bg: #f6f6f6;
+    --link: #0b5cad;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --fg: #e6e6e6;
+      --bg: #171717;
+      --muted: #a0a0a0;
+      --rule: #333333;
+      --code-bg: #212121;
+      --link: #6cb6ff;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0 auto;
+    padding: 2.5rem 1.25rem 4rem;
+    max-width: 46rem;
+    font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: var(--fg);
+    background: var(--bg);
+  }
+  h1 { font-size: 1.6rem; margin: 0 0 .25rem; }
+  h2 { font-size: 1.05rem; margin: 2.25rem 0 .6rem; }
+  .sub { color: var(--muted); margin: 0 0 2rem; }
+  a { color: var(--link); }
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: .85rem 1rem;
+    overflow-x: auto;
+    font-size: .875rem;
+    line-height: 1.5;
+  }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  p code, li code {
+    background: var(--code-bg);
+    padding: .1rem .3rem;
+    border-radius: 3px;
+    font-size: .875em;
+  }
+  ul { padding-left: 1.15rem; }
+  li { margin: .35rem 0; }
+  footer {
+    margin-top: 3rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--rule);
+    color: var(--muted);
+    font-size: .875rem;
+  }
+</style>
+</head>
+<body>
+
+<h1>rapt apt repository</h1>
+<p class="sub">
+  Binary packages for <a href="https://github.com/cornball-ai/rapt">rapt</a>, which
+  bridges R's <code>install.packages()</code> to apt so packages install as
+  <a href="https://github.com/eddelbuettel/r2u">r2u</a> binaries instead of compiling.
+  A Python-free alternative to bspm.
+</p>
+
+<h2>Enable the repository</h2>
+<pre><code>sudo tee /etc/apt/sources.list.d/rapt.sources &gt; /dev/null &lt;&lt;'EOF'
+Types: deb
+URIs: https://cornball-ai.github.io/rapt
+Suites: ./
+Components:
+Trusted: yes
+Enabled: yes
+Architectures: amd64
+EOF
+
+sudo apt update
+sudo apt install rapt</code></pre>
+
+<p>The older one-line form works too:</p>
+<pre><code>deb [trusted=yes] https://cornball-ai.github.io/rapt ./</code></pre>
+
+<h2>Before you do</h2>
+<ul>
+  <li>
+    <strong>The repository is unsigned</strong>, so <code>Trusted: yes</code> is
+    required. Without it apt refuses the repository outright.
+  </li>
+  <li>
+    <strong>amd64 only, built on 24.04.</strong> The package declares
+    <code>libc6 (&gt;= 2.38)</code>, so it will not install on 22.04, and there is
+    no arm64 build yet.
+  </li>
+  <li>
+    <strong>r2u is a separate prerequisite.</strong> Every <code>r-cran-*</code>
+    package still comes from r2u. This repository distributes rapt itself and
+    nothing else.
+  </li>
+</ul>
+
+<h2>What gets installed</h2>
+<p>
+  The package ships the <code>raptd</code> daemon, its systemd socket and service
+  units, the R package, and a drop-in at <code>/etc/R/profile.d/rapt.R</code> that
+  enables rapt for every R session. In a container you are already root, so the
+  daemon is unnecessary and rapt calls apt directly.
+</p>
+
+<footer>
+  Published from CI on each release tag.
+  <a href="Packages">Package index</a> &middot;
+  <a href="https://github.com/cornball-ai/rapt">Source</a> &middot;
+  <a href="https://github.com/cornball-ai/rapt/issues">Issues</a>
+</footer>
+
+</body>
+</html>
