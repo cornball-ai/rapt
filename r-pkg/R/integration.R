@@ -15,6 +15,9 @@
 #' This is called automatically at startup when rapt is installed via
 #' the Debian package (via \code{/etc/R/profile.d/rapt.R}).
 #'
+#' @param verbose logical controlling whether this function reports what
+#' it did, defaulting to option \sQuote{rapt.verbose} and to \sQuote{TRUE}
+#' when that option is unset. Set to \sQuote{FALSE} for silence.
 #' @return Invisible \code{NULL}.
 #' @examples
 #' \dontrun{
@@ -24,9 +27,9 @@
 #' }
 #' @seealso \code{\link{disable}}, \code{\link{manager}}
 #' @export
-enable <- function() {
+enable <- function(verbose = getOption("rapt.verbose", TRUE)) {
     if (isTRUE(getOption("rapt.enabled"))) {
-        message("rapt already enabled")
+        if (verbose) message("rapt already enabled")
         return(invisible(NULL))
     }
 
@@ -71,7 +74,7 @@ enable <- function() {
     if (was_locked) lockBinding("install.packages", ns)
 
     options(rapt.enabled = TRUE)
-    message("rapt enabled - install.packages() will use apt when possible")
+    if (verbose) message("rapt enabled - install.packages() will use apt when possible")
     invisible(NULL)
 }
 
@@ -80,6 +83,9 @@ enable <- function() {
 #' Restores the original \code{install.packages()} function so packages
 #' are installed from CRAN instead of apt.
 #'
+#' @param verbose logical controlling whether this function reports what
+#' it did, defaulting to option \sQuote{rapt.verbose} and to \sQuote{TRUE}
+#' when that option is unset. Set to \sQuote{FALSE} for silence.
 #' @return Invisible \code{NULL}.
 #' @examples
 #' \dontrun{
@@ -88,9 +94,9 @@ enable <- function() {
 #' }
 #' @seealso \code{\link{enable}}
 #' @export
-disable <- function() {
+disable <- function(verbose = getOption("rapt.verbose", TRUE)) {
     if (!isTRUE(getOption("rapt.enabled"))) {
-        message("rapt not enabled")
+        if (verbose) message("rapt not enabled")
         return(invisible(NULL))
     }
 
@@ -108,6 +114,6 @@ disable <- function() {
 
     .rapt_env$original_install.packages <- NULL
     options(rapt.enabled = FALSE)
-    message("rapt disabled - install.packages() restored to original")
+    if (verbose) message("rapt disabled - install.packages() restored to original")
     invisible(NULL)
 }

@@ -3,7 +3,12 @@
 \alias{disable}
 \title{Disable rapt integration}
 \usage{
-disable()
+disable(verbose = getOption("rapt.verbose", TRUE))
+}
+\arguments{
+\item{verbose}{logical controlling whether this function reports what
+it did, defaulting to option \sQuote{rapt.verbose} and to \sQuote{TRUE}
+when that option is unset. Set to \sQuote{FALSE} for silence.}
 }
 \value{
 Invisible \code{NULL}.

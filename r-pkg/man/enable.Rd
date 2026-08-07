@@ -3,7 +3,12 @@
 \alias{enable}
 \title{Enable rapt integration}
 \usage{
-enable()
+enable(verbose = getOption("rapt.verbose", TRUE))
+}
+\arguments{
+\item{verbose}{logical controlling whether this function reports what
+it did, defaulting to option \sQuote{rapt.verbose} and to \sQuote{TRUE}
+when that option is unset. Set to \sQuote{FALSE} for silence.}
 }
 \value{
 Invisible \code{NULL}.
@@ -17,8 +22,11 @@ packages available in the r2u repository. When enabled, calls to
 \item Install those packages via \code{install_sys()}
 \item Install remaining packages from CRAN as usual
 }
+}
+\details{
 This is called automatically at startup when rapt is installed via
 the Debian package (via \code{/etc/R/profile.d/rapt.R}).
+
 }
 \examples{
 \dontrun{
