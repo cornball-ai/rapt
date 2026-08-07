@@ -15,9 +15,9 @@
 #' This is called automatically at startup when rapt is installed via
 #' the Debian package (via \code{/etc/R/profile.d/rapt.R}).
 #'
-#' Option \sQuote{rapt.verbose} can be set to \sQuote{FALSE} to suppress
-#' the message.
-#'
+#' @param verbose logical with default value supplied by option
+#' \sQuote{rapt.verbose} with a fallback of \sQuote{TRUE} to suppress
+#' a message from this function.
 #' @return Invisible \code{NULL}.
 #' @examples
 #' \dontrun{
@@ -27,7 +27,7 @@
 #' }
 #' @seealso \code{\link{disable}}, \code{\link{manager}}
 #' @export
-enable <- function() {
+enable <- function(verbose = getOption("rapt.verbose", TRUE)) {
     if (isTRUE(getOption("rapt.enabled"))) {
         message("rapt already enabled")
         return(invisible(NULL))
@@ -74,8 +74,7 @@ enable <- function() {
     if (was_locked) lockBinding("install.packages", ns)
 
     options(rapt.enabled = TRUE)
-    if (getOption("rapt.verbose", TRUE))
-        message("rapt enabled - install.packages() will use apt when possible")
+    if (verbose) message("rapt enabled - install.packages() will use apt when possible")
     invisible(NULL)
 }
 

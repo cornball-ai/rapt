@@ -3,7 +3,12 @@
 \alias{enable}
 \title{Enable rapt integration}
 \usage{
-enable()
+enable(verbose = getOption("rapt.verbose", TRUE))
+}
+\arguments{
+\item{verbose}{logical with default value supplied by option
+\sQuote{rapt.verbose} with a fallback of \sQuote{TRUE} to suppress
+a message from this function.}
 }
 \value{
 Invisible \code{NULL}.
@@ -21,9 +26,6 @@ packages available in the r2u repository. When enabled, calls to
 \details{
 This is called automatically at startup when rapt is installed via
 the Debian package (via \code{/etc/R/profile.d/rapt.R}).
-
-Option \sQuote{rapt.verbose} can be set to \sQuote{FALSE} to suppress
-the message.
 
 }
 \examples{
