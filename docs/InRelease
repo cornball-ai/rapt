@@ -1,0 +1,20 @@
+Architectures: amd64 all
+Date: Fri, 07 Aug 2026 16:35:07 +0000
+Label: ppa for rapt
+Origin: cornball-ai rapt repository
+MD5Sum:
+ de1c6f39c337470ac0830578b31a143d              951 Packages
+ cdcd92f4339fadb6a877c5526abfc210              658 Packages.gz
+ 89ed90c2fa845dd9f0ea45fb96fe40ea              119 Release
+SHA1:
+ 9f785e61bad9c7204b7399adab5b0907a94df66d              951 Packages
+ e97d9725404cfe6894116c846d77fa4e37828688              658 Packages.gz
+ 2ccb0e4729a1054fd164691fe2827e174df7cc56              119 Release
+SHA256:
+ 8e2c34c7286f339c55e305b29c40f1d0543ed0b47ac19a57f4e5b3b81887a748              951 Packages
+ f2267d1c6b94246fd826790782266a0acf281592ca7173092e8422ed5d5ed8e0              658 Packages.gz
+ e35702fe35f2f8856620955ce5c14b0fa6198a8809e6329d550f446499f6bd31              119 Release
+SHA512:
+ a66ffcee26755bb62a8b84bc1f08322779e97ff3cb2c80882425e674d16744748834482da5c42f2e17c1caae147e4deff79ce2137c39577b7d9e148291a3d165              951 Packages
+ cba62df279c193f7452175b45a7ec40b8be1c8e92e48b25ee2d9a0fd4f226420cab0efeee94c581829a3f5d1975e7189832ee899f42d545d7252b865d3e7039d              658 Packages.gz
+ f644f473b2f54a6727ed66b2bd1de6f448d6191e2e858f11ea478c6fc59bad6e6ad727e849e80d9e11ae4424c0e932b449c6625adf318293c206f02777f12896              119 Release
