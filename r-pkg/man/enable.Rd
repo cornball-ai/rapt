@@ -6,9 +6,9 @@
 enable(verbose = getOption("rapt.verbose", TRUE))
 }
 \arguments{
-\item{verbose}{logical with default value supplied by option
-\sQuote{rapt.verbose} with a fallback of \sQuote{TRUE} to suppress
-a message from this function.}
+\item{verbose}{logical controlling whether this function reports what
+it did, defaulting to option \sQuote{rapt.verbose} and to \sQuote{TRUE}
+when that option is unset. Set to \sQuote{FALSE} for silence.}
 }
 \value{
 Invisible \code{NULL}.
