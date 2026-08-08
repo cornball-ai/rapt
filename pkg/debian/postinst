@@ -13,7 +13,7 @@ case "$1" in
 
 # Source /etc/R/profile.d/ drop-in scripts
 local({
-    for (f in list.files("/etc/R/profile.d", pattern = "\\.R$", full.names = TRUE))
+    for (f in list.files("/etc/R/profile.d", pattern = "\\.[rR]$", full.names = TRUE))
         source(f, local = FALSE)
 })
 EOF
