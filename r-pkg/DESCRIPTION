@@ -5,6 +5,9 @@ Version: 0.1.0.1
 Authors@R: c(person("Troy", "Hernandez", role = c("aut", "cre"),
                     email = "troy@cornball.ai",
                     comment = c(ORCID = "0009-0005-4248-604X")),
+             person("Dirk", "Eddelbuettel", role = "ctb",
+                    email = "edd@debian.org",
+                    comment = c(ORCID = "0000-0001-6419-907X")),
              person("cornball.ai", role = "cph"))
 Description: Enables 'install.packages()' to install R packages via apt,
     providing fast binary installs from r2u repositories. Communicates with
