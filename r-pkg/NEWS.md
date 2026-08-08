@@ -7,7 +7,7 @@
   `RAPT_VERBOSE=TRUE` to restore the startup message.
 
 * Binary packages are published to an apt repository at
-  <https://cornball-ai.github.io/rapt> (#17).
+  <https://cornball-ai.github.io/rapt/> (#17).
 
 # rapt 0.1.0
 
