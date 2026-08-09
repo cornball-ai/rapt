@@ -5,4 +5,4 @@
 ## rather than an option, because R reads ~/.Renviron before any profile file,
 ## so this stays settable without root.
 if (requireNamespace("rapt", quietly = TRUE))
-    rapt::enable(verbose = identical(toupper(Sys.getenv("RAPT_VERBOSE")), "TRUE"))
+    rapt::enable(verbose = identical(toupper(Sys.getenv("RAPT_VERBOSE", "FALSE")), "TRUE"))
