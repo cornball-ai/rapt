@@ -82,6 +82,11 @@ jobs:
       - name: Debian Dependencies
         run: ./run.sh install_aptget debhelper apt-utils
 
+      # Ahead of the build, as a broken mkrepo.sh cannot publish whatever the
+      # build produces anyway.
+      - name: Repository Tests
+        run: tools/test-mkrepo.sh
+
       # apt indexes checksums per version, so two different .deb files sharing
       # one version make every client that already fetched the old one whine
       # about a hash mismatch. A tag must therefore match debian/changelog, a

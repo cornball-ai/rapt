@@ -85,7 +85,7 @@ apt-ftparchive -c repo.conf \
     -o APT::FTPArchive::Release::Suite="${suite}" \
     -o APT::FTPArchive::Release::Codename="${suite}" \
     -o APT::FTPArchive::Release::Components="main" \
-    -o APT::FTPArchive::Release::Architectures="$(echo ${arches})" \
+    -o APT::FTPArchive::Release::Architectures="$(printf '%s' "${arches}" | tr '\n' ' ')" \
     release "dists/${suite}" > "dists/${suite}/.Release.tmp"
 mv "dists/${suite}/.Release.tmp" "dists/${suite}/Release"
 cp -a "dists/${suite}/Release" "dists/${suite}/InRelease"
