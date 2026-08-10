@@ -84,11 +84,17 @@ jobs:
 
       # apt indexes checksums per version, so two different .deb files sharing
       # one version make every client that already fetched the old one whine
-      # about a hash mismatch. A tag must therefore match debian/changelog, and
-      # a snapshot gets a version of its own.
+      # about a hash mismatch. A tag must therefore match debian/changelog, a
+      # snapshot gets a version of its own, and every build is suffixed with
+      # the suite it was compiled against.
       - name: Version
         run: |
+          suite=$(. /etc/os-release; echo "${VERSION_CODENAME}")
+          echo "SUITE=${suite}" >> "$GITHUB_ENV"
+
           cur=$(cd pkg && dpkg-parsechangelog -S Version)
+          note="Build for ${suite}."
+
           if [ "${GITHUB_REF_TYPE}" = "tag" ]; then
               # Accept the tag with or without the Debian revision, so both
               # v0.1.0 and v0.1.0-1 match a changelog reading 0.1.0-1.
@@ -101,14 +107,17 @@ jobs:
               # The run number, not just the date, as two dispatches of one
               # commit on one day would otherwise share a version while the
               # generated changelog date makes their .deb files differ.
-              snap="${cur}+git$(date -u +%Y%m%d).${GITHUB_RUN_NUMBER}.$(git rev-parse --short HEAD)"
-              { printf 'rapt (%s) unstable; urgency=medium\n\n  * Snapshot build.\n\n -- github-actions <actions@github.com>  %s\n\n' \
-                     "$snap" "$(date -uR)"
-                cat pkg/debian/changelog
-              } > changelog.new
-              mv changelog.new pkg/debian/changelog
-              echo "building snapshot ${snap}"
+              cur="${cur}+git$(date -u +%Y%m%d).${GITHUB_RUN_NUMBER}.$(git rev-parse --short HEAD)"
+              note="Snapshot build."
           fi
+
+          new="${cur}~${suite}"
+          { printf 'rapt (%s) unstable; urgency=medium\n\n  * %s\n\n -- github-actions <actions@github.com>  %s\n\n' \
+                 "$new" "$note" "$(date -uR)"
+            cat pkg/debian/changelog
+          } > changelog.new
+          mv changelog.new pkg/debian/changelog
+          echo "building ${new}"
 
       - name: Debian Build
         run: cd pkg && dpkg-buildpackage -rfakeroot -us -uc -b -tc
@@ -120,7 +129,7 @@ jobs:
       # publish steps below do the real thing against the target branch.
       - name: Update Repository
         if: env.PUBLISH != 'true'
-        run: tools/mkrepo.sh rapt_*.deb
+        run: tools/mkrepo.sh "${SUITE}" rapt_*.deb
 
       - name: Publish Repository
         if: env.PUBLISH == 'true'
@@ -130,9 +139,9 @@ jobs:
           # untracked and survives the switch.
           git fetch --depth=1 origin "${TARGET}"
           git checkout -B "${TARGET}" FETCH_HEAD
-          tools/mkrepo.sh rapt_*.deb
+          tools/mkrepo.sh "${SUITE}" rapt_*.deb
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A docs
-          git diff --quiet --cached || git commit -m "Update apt repository"
+          git diff --quiet --cached || git commit -m "Update apt repository (${SUITE})"
           git push origin "HEAD:${TARGET}"
