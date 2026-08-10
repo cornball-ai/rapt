@@ -1,3 +1,13 @@
+rapt (0.1.1-1) unstable; urgency=medium
+
+  * The /etc/R/profile.d/rapt.R drop-in is quiet by default. Set
+    RAPT_VERBOSE=TRUE to restore the startup message.
+  * enable() and disable() gained a verbose argument, defaulting to
+    option rapt.verbose.
+  * Drop-ins ending in .r are sourced alongside .R.
+
+ -- Troy Hernandez <troy@cornball.ai>  Mon, 10 Aug 2026 12:18:45 +0000
+
 rapt (0.1.0-1) unstable; urgency=medium
 
   * Initial release.

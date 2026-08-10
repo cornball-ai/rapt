@@ -1,4 +1,4 @@
-# rapt 0.1.0.1
+# rapt 0.1.1
 
 * `enable()` and `disable()` gained a `verbose` argument, defaulting to option
   `rapt.verbose` (#20, thanks to @eddelbuettel).
