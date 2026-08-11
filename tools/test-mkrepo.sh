@@ -90,6 +90,34 @@ check "oldest was dropped" \
 check "index matches the pruned pool" \
     "$(grep -c '^Package: rapt$' "${RAPT_REPO}/dists/noble/main/binary-amd64/Packages")" "3"
 
+echo "# publish.sh groups a downloaded artifact tree by suite"
+rm -rf "${RAPT_REPO}/dists" "${RAPT_REPO}/pool"
+for pair in jammy:amd64 noble:amd64 noble:arm64 resolute:amd64 resolute:arm64; do
+    s=${pair%:*}; a=${pair#*:}
+    mkdir -p "${work}/incoming/deb-${s}-${a}"
+    mkdeb "0.1.2-1~${s}" "${a}" "${work}/incoming/deb-${s}-${a}"
+done
+"${here}/publish.sh" "${work}/incoming" > /dev/null
+
+check "jammy has one architecture" \
+    "$(ls -1 "${RAPT_REPO}/dists/jammy/main" | wc -l)" "1"
+check "noble has two architectures" \
+    "$(ls -1 "${RAPT_REPO}/dists/noble/main" | wc -l)" "2"
+check "resolute has two architectures" \
+    "$(ls -1 "${RAPT_REPO}/dists/resolute/main" | wc -l)" "2"
+check "noble Release declares both" \
+    "$(grep -c '^Architectures: amd64 arm64$' "${RAPT_REPO}/dists/noble/Release")" "1"
+check "no jammy build leaked into noble" \
+    "$(grep -c 'jammy' "${RAPT_REPO}/dists/noble/main/binary-amd64/Packages" || true)" "0"
+
+echo "# publish.sh refuses an empty tree rather than reporting success"
+mkdir -p "${work}/empty"
+if "${here}/publish.sh" "${work}/empty" > /dev/null 2>&1; then
+    bad "empty artifact tree was accepted"
+else
+    ok "empty artifact tree was refused"
+fi
+
 echo
 echo "${pass} passed, ${fail} failed"
 [ "${fail}" -eq 0 ]
