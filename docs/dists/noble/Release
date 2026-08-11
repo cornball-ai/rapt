@@ -1,0 +1,27 @@
+Architectures: amd64 arm64
+Codename: noble
+Components: main
+Date: Tue, 11 Aug 2026 16:38:49 +0000
+Label: ppa for rapt
+Origin: cornball-ai rapt repository
+Suite: noble
+MD5Sum:
+ dc7114ad1ccd10b40d9ea31a8ab86a01              984 main/binary-amd64/Packages
+ 2a277087da8be6172cca579be24b1854              679 main/binary-amd64/Packages.gz
+ a6f263a3930085b7d0b5bf1e114c45b0              984 main/binary-arm64/Packages
+ ffeba280b3a7fed4547200cc5d74d366              678 main/binary-arm64/Packages.gz
+SHA1:
+ 34fe5cc96aea60cbe0e09c673a1ea81f632ee6f3              984 main/binary-amd64/Packages
+ 52a55d417da6475a11fed97bae45eda845d7ed70              679 main/binary-amd64/Packages.gz
+ 68bbdacb5e512a9d014d7dabca421d66a4dcdeae              984 main/binary-arm64/Packages
+ acc2a76761ec1dd0ecc5264cd59368fe58243e1a              678 main/binary-arm64/Packages.gz
+SHA256:
+ b994765a090a06ab148eb8e9dff98624bc9b9f11cf1a0c13388899795fea38d5              984 main/binary-amd64/Packages
+ 412ae59a82ceaf13be0c3a36aa40aa30d82b0f347a10fad207f8c91e3a28a42d              679 main/binary-amd64/Packages.gz
+ dfe21bc196191def396066ed65a581392407b1b9ad9af22b29057863d7fdea66              984 main/binary-arm64/Packages
+ 25d36bb5b6a49c7043b8235f0dfd0443a4a8f8473210c783c2e423bc5742f6b8              678 main/binary-arm64/Packages.gz
+SHA512:
+ b75f9046fdbab038a40fd5a5c9c55de0b76d74751a9b25d842f6c820a44b44e903a080cb2d7659b3b487d26bee607b80ddf603bb60747b1f16673a8eddf48b50              984 main/binary-amd64/Packages
+ 6e1296cc9296aa86132560b7fb109b466d3c24b277921f07f7408977443b852cd71500307a76732dd6e97b860a2bdafdb48c4e91400e9b4663de40ce65925d63              679 main/binary-amd64/Packages.gz
+ ed4febb3f02bd399fedd737175eb31f036b23c4f6e07690173e16d31628c20d9f0fafb3b06d1a09bf80484ad91abea2f116faecc769bb9b23efbd82427206727              984 main/binary-arm64/Packages
+ 4b4357619e418e9f9a6609d815e27581bfa1f7374e56a9d5034b5e400ba9e4a91c6a78b1ffe3499fb476e6040bbdb96a2a73a8673089915f3c9141f638b84a56              678 main/binary-arm64/Packages.gz

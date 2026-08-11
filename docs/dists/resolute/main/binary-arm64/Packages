@@ -1,0 +1,24 @@
+Package: rapt
+Architecture: arm64
+Version: 0.1.2-1~resolute
+Priority: optional
+Section: gnu-r
+Maintainer: Troy Hernandez <troy@cornball.ai>
+Installed-Size: 237
+Depends: libc6 (>= 2.38), r-base-core, r-api-4.0
+Suggests: systemd
+Filename: pool/resolute/main/r/rapt/rapt_0.1.2-1~resolute_arm64.deb
+Size: 49588
+MD5sum: 6eef1b57bbbbcb03abd89c148a84259f
+SHA1: f882a02a7fa166900847d3b19b3b50aa64b1dacb
+SHA256: ad5615c3b050bb76e7dab657e9fb80823758529526356bdb1fac876f4854d95a
+SHA512: 95b0299c8d806912cef8733756a4ded9713057008bae4fe670166889e8c0439528f59245c6efd2cc374f3d1e424a2e9df50adc7a921797d58ad6dfd662e87fc4
+Homepage: https://github.com/cornball-ai/rapt
+Description: Bridge install.packages() to apt for binary R packages
+ rapt enables R's install.packages() to automatically use apt for
+ packages available in the r2u repository, providing fast binary
+ installs without compilation.
+ .
+ This is a Python-free alternative to bspm, using a minimal C daemon
+ that communicates over a Unix socket.
+

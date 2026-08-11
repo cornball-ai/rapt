@@ -1,0 +1,19 @@
+Architectures: amd64
+Codename: jammy
+Components: main
+Date: Tue, 11 Aug 2026 16:38:49 +0000
+Label: ppa for rapt
+Origin: cornball-ai rapt repository
+Suite: jammy
+MD5Sum:
+ 1dbadc7987e11717c672f39ee76d8fd8              984 main/binary-amd64/Packages
+ a5c4aa02915fc536d7b9b5ed3236485c              680 main/binary-amd64/Packages.gz
+SHA1:
+ eb9b5340f952a4a62f3df572b84735fac8f7465b              984 main/binary-amd64/Packages
+ 15d8ac346a59cb55b1427014f4e8e5749932a2b4              680 main/binary-amd64/Packages.gz
+SHA256:
+ 5c6c22db6ca132b9907bd9b0d2d4daae315aadecae2c633a90f01fee4945f65d              984 main/binary-amd64/Packages
+ 6208007a16bf682cbd618f8f5b316d4a2a27c9a70706f0207ba04bbab2dfda26              680 main/binary-amd64/Packages.gz
+SHA512:
+ c32abbcd55a7d5ec27cf1270f65d2efbf475a08da80716ad9398ad412f0a511321b2d7592e3ddc42d33494b7a4a5fc73ee585da47eb6d8124e790756bc40e199              984 main/binary-amd64/Packages
+ 20ca42dac366a059d095c460511f27e4b9999bd9b5e6ba813ae933f51fc0e0af29f3afc907ba199815ae0f3a44acf94a57e9133efc2524eb7dd1e1c09bae27d9              680 main/binary-amd64/Packages.gz
