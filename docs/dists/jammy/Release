@@ -1,19 +1,19 @@
 Architectures: amd64
 Codename: jammy
 Components: main
-Date: Tue, 11 Aug 2026 16:38:49 +0000
+Date: Tue, 11 Aug 2026 17:09:09 +0000
 Label: ppa for rapt
 Origin: cornball-ai rapt repository
 Suite: jammy
 MD5Sum:
- 1dbadc7987e11717c672f39ee76d8fd8              984 main/binary-amd64/Packages
- a5c4aa02915fc536d7b9b5ed3236485c              680 main/binary-amd64/Packages.gz
+ 3eac5938c776617be737e3012854aa1f              984 main/binary-amd64/Packages
+ 22ea1fcd2aedd95f9ed9252df95e9185              682 main/binary-amd64/Packages.gz
 SHA1:
- eb9b5340f952a4a62f3df572b84735fac8f7465b              984 main/binary-amd64/Packages
- 15d8ac346a59cb55b1427014f4e8e5749932a2b4              680 main/binary-amd64/Packages.gz
+ 3e4faa2c88a439d4a70c45f6cd8a2167ad1d3c2c              984 main/binary-amd64/Packages
+ 56a0a01490eed24189a57d7177dc8e399f3b3481              682 main/binary-amd64/Packages.gz
 SHA256:
- 5c6c22db6ca132b9907bd9b0d2d4daae315aadecae2c633a90f01fee4945f65d              984 main/binary-amd64/Packages
- 6208007a16bf682cbd618f8f5b316d4a2a27c9a70706f0207ba04bbab2dfda26              680 main/binary-amd64/Packages.gz
+ cea5f09afaae8a38c159cc5db8e60aea503f7148b08822198de7fe11ac0cfb2b              984 main/binary-amd64/Packages
+ 10d49d5b3f9e335ed70dbb298fbcde5b98bf5d2ab7fb36006b84c70ee7881cc4              682 main/binary-amd64/Packages.gz
 SHA512:
- c32abbcd55a7d5ec27cf1270f65d2efbf475a08da80716ad9398ad412f0a511321b2d7592e3ddc42d33494b7a4a5fc73ee585da47eb6d8124e790756bc40e199              984 main/binary-amd64/Packages
- 20ca42dac366a059d095c460511f27e4b9999bd9b5e6ba813ae933f51fc0e0af29f3afc907ba199815ae0f3a44acf94a57e9133efc2524eb7dd1e1c09bae27d9              680 main/binary-amd64/Packages.gz
+ 635a2e3b7ff2997285a98bea5b1cca9814ef83520e8c17aa1a3b8cdd19f1bd42bba68c20308f6b4d8cc5edf3b9b338859151494066aa2dfae92e026a57ddca04              984 main/binary-amd64/Packages
+ 9512f591c5d4fcf38c099632eec805392aec0c5ffbbe9c83dedefd124cfbd04b2ac24fd718af5d28b7eb4455ff329762a67272beb0d9c8adb81efd0c340da2ac              682 main/binary-amd64/Packages.gz

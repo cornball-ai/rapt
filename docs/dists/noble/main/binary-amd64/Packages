@@ -8,11 +8,11 @@ Installed-Size: 133
 Depends: libc6 (>= 2.38), r-base-core, r-api-4.0
 Suggests: systemd
 Filename: pool/noble/main/r/rapt/rapt_0.1.2-1~noble_amd64.deb
-Size: 49276
-MD5sum: 2f7989cb7d107010b0b21989a4f7caa7
-SHA1: d4ffddebb5ccb80846b3ceb040e3181e1cd97578
-SHA256: 995f3a036c0e40b71a01fecd52e11a3cb69acf51aec478cb412188388d1b365c
-SHA512: b3e382681f822ee5e37b2c2b54ed9ed1d7b136e1665b7ad7fa062648bf847f8a4d3800c0e05b1b54509ee6ab93dc1316284627b4f320ec67be26424ec473827d
+Size: 49228
+MD5sum: 87f20bc142c734fa8f010b999c7a7907
+SHA1: 0cad0674d95eb6dd077b1178e588d7eaa6f2948a
+SHA256: 547deb31f6798f1da807e9d6068da3acb80485042d4501df708ed8eb0a4cb660
+SHA512: 709e0b3872909a71b00586bf9a609d3cdc425dd6156be98bda61d7752a5517e5a492fa2a605ad84debbdf06e40afcddd1b359222a6179031bf1d8b7ee8472289
 Homepage: https://github.com/cornball-ai/rapt
 Description: Bridge install.packages() to apt for binary R packages
  rapt enables R's install.packages() to automatically use apt for
