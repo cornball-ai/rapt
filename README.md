@@ -18,23 +18,27 @@ A minimal C daemon (`raptd`) listens on `/run/raptd.sock` and executes apt comma
 
 ### From the apt repository
 
-Prebuilt amd64 packages are published to <https://cornball-ai.github.io/rapt>. The
-repository is unsigned, so clients have to opt in with `Trusted: yes`:
+Prebuilt packages are published to <https://cornball-ai.github.io/rapt/>. The
+repository is unsigned, so clients have to opt in with `Trusted: yes`. Set
+`Suites` to your release codename, `noble` for 24.04:
 
 ```bash
 sudo tee /etc/apt/sources.list.d/rapt.sources > /dev/null <<'EOF'
 Types: deb
 URIs: https://cornball-ai.github.io/rapt
-Suites: ./
-Components:
+Suites: noble
+Components: main
 Trusted: yes
 Enabled: yes
-Architectures: amd64
 EOF
 
 sudo apt update
 sudo apt install rapt
 ```
+
+Packages are built per release, so a `noble` client is never offered a build
+compiled against a different one. Only the suites r2u itself serves are worth
+enabling, since rapt has nothing to bridge to otherwise.
 
 ### With .deb (recommended)
 
