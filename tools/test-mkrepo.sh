@@ -118,6 +118,21 @@ else
     ok "empty artifact tree was refused"
 fi
 
+# The publish job commits with 'git add -A docs', so a .gitignore rule that
+# covers the pool drops every package while still committing the indices that
+# name them. That publishes a repository which resolves and then 404s, and
+# nothing in the run fails. Ask git directly rather than trusting the pattern
+# to keep matching the layout.
+echo "# the real .gitignore does not swallow pool packages"
+repo_root="$(cd "${here}/.." && pwd)"
+ignored=0
+for pair in jammy:amd64 noble:amd64 noble:arm64 resolute:amd64 resolute:arm64; do
+    s=${pair%:*}; a=${pair#*:}
+    p="${repo_root}/docs/pool/${s}/main/r/rapt/rapt_0.1.2-1~${s}_${a}.deb"
+    git -C "${repo_root}" check-ignore -q "$p" 2>/dev/null && ignored=$((ignored + 1))
+done
+check "no suite's pool packages are ignored" "${ignored}" "0"
+
 echo
 echo "${pass} passed, ${fail} failed"
 [ "${fail}" -eq 0 ]
