@@ -10,8 +10,11 @@ r-pkg/*.tar.gz
 # Debian build artifacts (in pkg/)
 *.deb
 *.ddeb
-# ... except the published ones in the apt repository
-!docs/*.deb
+# ... except the published ones in the apt repository, which live under the
+# per-suite pool rather than flat in docs/ since 0.1.2. A pattern matching
+# only docs/*.deb silently drops every package while still committing the
+# indices that name them, publishing a repository that 404s on install.
+!docs/pool/**/*.deb
 *.buildinfo
 *.changes
 pkg/debian/.debhelper/
