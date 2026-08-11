@@ -1,3 +1,13 @@
+# rapt 0.1.2
+
+* The apt repository is laid out per suite rather than flat, so a client is
+  only ever offered builds for its own release (#26). Existing `.sources`
+  entries need updating from `Suites: ./` to a codename plus
+  `Components: main`.
+
+* Binary packages are built for every suite and architecture r2u serves:
+  jammy, noble and resolute on amd64, plus noble and resolute on arm64 (#27).
+
 # rapt 0.1.1
 
 * `enable()` and `disable()` gained a `verbose` argument, defaulting to option

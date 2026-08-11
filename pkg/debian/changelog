@@ -1,3 +1,11 @@
+rapt (0.1.2-1) unstable; urgency=medium
+
+  * The apt repository is laid out per suite rather than flat, so a client
+    is only ever offered builds for its own release.
+  * Binary packages are built for every suite and architecture r2u serves.
+
+ -- Troy Hernandez <troy@cornball.ai>  Tue, 11 Aug 2026 16:05:00 +0000
+
 rapt (0.1.1-1) unstable; urgency=medium
 
   * The /etc/R/profile.d/rapt.R drop-in is quiet by default. Set
